@@ -1,0 +1,39 @@
+[gd_resource type="ShaderMaterial" load_steps=9 format=3 uid="uid://e2pxjw0f7wlr"]
+
+[ext_resource type="Shader" path="res://Shaders/BlendTextures.gdshader" id="1_yj8qm"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vgv0u"]
+load_path = "res://.godot/imported/Grass_Bake1_PBR_Diffuse.png-7fbaedc6618e1a49bdd64d2ede774268.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hvu8s"]
+load_path = "res://.godot/imported/Rocks_Bake1_PBR_Diffuse.png-b0820f071a95297908721bc9b6125ef0.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ngsw8"]
+load_path = "res://.godot/imported/TerrainBlend.png-7bb5664c50b7fda594c7a839af5cc9d5.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0qn3x"]
+load_path = "res://.godot/imported/Grass_Bake1_PBR_Metalness-Grass_Bake1_PBR_Roughness.png-b9f1a37645c955d6720f97266fca296c.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_bcl80"]
+load_path = "res://.godot/imported/Rocks_Bake1_PBR_Metalness-Rocks_Bake1_PBR_Roughness.png-e97c59570d6090e58e4c4716f5967d9e.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_mes6r"]
+load_path = "res://.godot/imported/Grass_Bake1_PBR_Normal.png-0dd9fe3f54db906bf0443a64d6855fb7.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_dm4yq"]
+load_path = "res://.godot/imported/Rocks_Bake1_PBR_Normal.png-24dd476651734198ac23c502617b7e31.s3tc.ctex"
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_yj8qm")
+shader_parameter/SpecularFac = 0.3
+shader_parameter/MixSpecular = true
+shader_parameter/SpecBlendOffset = 1.0
+shader_parameter/SpecBlendScale = 1.0
+shader_parameter/Albedo1 = SubResource("CompressedTexture2D_vgv0u")
+shader_parameter/Albedo2 = SubResource("CompressedTexture2D_hvu8s")
+shader_parameter/MetalRough1 = SubResource("CompressedTexture2D_0qn3x")
+shader_parameter/MetalRough2 = SubResource("CompressedTexture2D_bcl80")
+shader_parameter/Normal1 = SubResource("CompressedTexture2D_mes6r")
+shader_parameter/Normal2 = SubResource("CompressedTexture2D_dm4yq")
+shader_parameter/BlendMap = SubResource("CompressedTexture2D_ngsw8")

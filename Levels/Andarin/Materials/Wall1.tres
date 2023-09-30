@@ -1,0 +1,31 @@
+[gd_resource type="ShaderMaterial" load_steps=9 format=3 uid="uid://bf8r22h6ih8v4"]
+
+[ext_resource type="Shader" path="res://Shaders/BlendTextures.gdshader" id="1_gqdab"]
+[ext_resource type="Texture2D" uid="uid://dflgubfp4dgku" path="res://Levels/Andarin/Import/Moss_Bake1_PBR_Diffuse.png" id="2_lvrrj"]
+[ext_resource type="Texture2D" uid="uid://hv4y86eih58s" path="res://Levels/Andarin/Wall1Blend.png" id="3_55jtt"]
+[ext_resource type="Texture2D" uid="uid://cph2jpttpmm75" path="res://Levels/Andarin/Import/Moss_Bake1_PBR_Metalness-Moss_Bake1_PBR_Roughness.png" id="4_2c8bn"]
+[ext_resource type="Texture2D" uid="uid://bvkbr32b4k2ip" path="res://Levels/Andarin/Import/Moss_Bake1_PBR_Normal.png" id="5_5bh1w"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hvu8s"]
+load_path = "res://.godot/imported/Rocks_Bake1_PBR_Diffuse.png-b0820f071a95297908721bc9b6125ef0.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_bcl80"]
+load_path = "res://.godot/imported/Rocks_Bake1_PBR_Metalness-Rocks_Bake1_PBR_Roughness.png-e97c59570d6090e58e4c4716f5967d9e.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_dm4yq"]
+load_path = "res://.godot/imported/Rocks_Bake1_PBR_Normal.png-24dd476651734198ac23c502617b7e31.s3tc.ctex"
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_gqdab")
+shader_parameter/SpecularFac = 0.5
+shader_parameter/MixSpecular = false
+shader_parameter/SpecBlendOffset = 1.0
+shader_parameter/SpecBlendScale = 1.0
+shader_parameter/Albedo1 = ExtResource("2_lvrrj")
+shader_parameter/Albedo2 = SubResource("CompressedTexture2D_hvu8s")
+shader_parameter/MetalRough1 = ExtResource("4_2c8bn")
+shader_parameter/MetalRough2 = SubResource("CompressedTexture2D_bcl80")
+shader_parameter/Normal1 = ExtResource("5_5bh1w")
+shader_parameter/Normal2 = SubResource("CompressedTexture2D_dm4yq")
+shader_parameter/BlendMap = ExtResource("3_55jtt")
