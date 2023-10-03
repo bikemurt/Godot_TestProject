@@ -4,7 +4,7 @@ render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_s
 uniform sampler2D Albedo1 : source_color;
 uniform sampler2D Albedo2 : source_color;
 uniform sampler2D MetalRough1;
-uniform sampler2D MetalRough2 : source_color;
+uniform sampler2D MetalRough2;
 uniform sampler2D Normal1;
 uniform sampler2D Normal2;
 

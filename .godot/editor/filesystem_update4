@@ -1,14 +1,6 @@
-res://Characters/AnimationTest/player.tscn
+res://Levels/Andarin/Andarin.tscn
 res://Shaders/BlendTextures.gdshader
 res://Materials/Terrain.tres
 res://Materials/Wall1.tres
 res://Materials/Wall2.tres
-res://Characters/AnimationTest/idle.res
 res://Materials/Wall3.tres
-res://Characters/AnimationTest/running.res
-res://Characters/AnimationTest/walking.res
-res://Characters/AnimationTest/player.gd
-res://Levels/Andarin/Andarin.tscn
-res://Characters/AnimationTest/jumping.res
-res://Characters/AnimationTest/turnleft.res
-res://Characters/AnimationTest/turnright.res

@@ -18,7 +18,10 @@ func _post_import(scene):
 		setMetas(scene)
 		deleteExtras()
 	
+	scene.set_script(load("res://Scripts/SceneInit.gd"))
+	
 	return scene # Remember to return the imported scene
+
 
 func deleteExtras():
 	for node in remove_nodes:
