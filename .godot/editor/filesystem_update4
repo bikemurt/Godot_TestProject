@@ -4,3 +4,9 @@ res://Materials/Terrain.tres
 res://Materials/Wall1.tres
 res://Materials/Wall2.tres
 res://Materials/Wall3.tres
+res://Scripts/Testing/RefCountedExt.gd
+res://Scripts/Testing/RefCounted.gd
+res://Scripts/Testing/NodeTest.gd
+res://Scripts/Modules/FrameCount.gd
+res://Characters/AnimationTest/player.tscn
+res://Characters/AnimationTest/player.gd
