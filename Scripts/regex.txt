@@ -1,0 +1,4 @@
+Set collisions
+
+"name":"(.*?)Collision(.*?)"
+"name":"\1Collision\2-colonly"

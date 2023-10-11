@@ -1,9 +1,10 @@
+StaticBody3D
+MeshInstance3D
+CollisionShape3D
+RigidBody3D
 Node3D
 NodeTest
-MeshInstance3D
-StaticBody3D
 Camera3D
-CollisionShape3D
 CharacterBody3D
 AnimationPlayer
 MultiMeshInstance3D

@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://pmti6ehvaa5o"]
+
+[ext_resource type="Script" path="res://Testing/Ball/Ball.gd" id="1_3pq4m"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_yc6la"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_ptx4j"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ni6u2"]
+
+[node name="Ball" type="Node3D"]
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_yc6la")
+max_contacts_reported = 2
+contact_monitor = true
+script = ExtResource("1_3pq4m")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+mesh = SubResource("SphereMesh_ptx4j")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("SphereShape3D_ni6u2")
+
+[connection signal="body_entered" from="RigidBody3D" to="RigidBody3D" method="_on_body_entered"]

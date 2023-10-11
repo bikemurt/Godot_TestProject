@@ -3,6 +3,7 @@ extends EditorScenePostImport
 
 var node_extras_dict = {}
 var remove_nodes = []
+
 # This sample changes all node names.
 # Called right after the scene is imported and gets the root node.
 func _post_import(scene):
@@ -15,7 +16,7 @@ func _post_import(scene):
 	var error = json.parse(content)
 	if error == OK:
 		parseGLTF(json.data)
-		setMetas(scene)
+		iterateScene(scene)
 		deleteExtras()
 	
 	scene.set_script(load("res://Scripts/SceneInit.gd"))
@@ -29,8 +30,6 @@ func deleteExtras():
 		node.free()
 
 func parseGLTF(json):
-	var mesh_lookup = {}
-	
 	# go through each node and find ones which references meshes
 	if "nodes" in json:
 		for node in json["nodes"]:
@@ -50,7 +49,7 @@ func addExtrasToDict(nodeName, extras):
 	for extra in extras:
 		node_extras_dict[gNodeName][extra] = str(extras[extra])
 
-func setMetas(node):
+func iterateScene(node):
 	if node != null:
 		if (node.name in node_extras_dict) and (node is MeshInstance3D):
 			var extras = node_extras_dict[node.name]
@@ -59,8 +58,17 @@ func setMetas(node):
 				print(key + "=" + extras[key])
 				node.set_meta(key, extras[key])
 			
-			if "_Baked" in node.name:
-				remove_nodes.append(node)
-
+		# anything directly baked from simple bake should not be imported
+		# either materials are used from a bake
+		# or an instance should be used
+		if node.name.ends_with("_Baked"):
+			remove_nodes.append(node)
+		
+		if "_Remove" in node.name:
+			remove_nodes.append(node)
+		
+		if node.name.ends_with("_Inst"):
+			remove_nodes.append(node)
+		
 	for child in node.get_children():
-		setMetas(child)
+		iterateScene(child)

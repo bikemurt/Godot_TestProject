@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://pmti6ehvaa5o"]
+
+[ext_resource type="Script" path="res://Testing/Ball/Ball.gd" id="1_3pq4m"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_ptx4j"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ni6u2"]
+
+[node name="Ball" type="Node3D"]
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+script = ExtResource("1_3pq4m")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = SubResource("SphereMesh_ptx4j")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+shape = SubResource("SphereShape3D_ni6u2")

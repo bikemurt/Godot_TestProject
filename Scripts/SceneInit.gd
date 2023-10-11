@@ -5,15 +5,14 @@ extends Node
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if Engine.is_editor_hint():
-		applyCustoms(self)
-		
-		pass
+		iterateScene(self)
 
 
-func applyCustoms(node):
+func iterateScene(node):
 	
-	if node is MeshInstance3D:
+	if node is MeshInstance3D:		
 		var mesh_inst : MeshInstance3D = node
+		
 		var metas = node.get_meta_list()
 		for meta in metas:
 			var meta_val = node.get_meta(meta)
@@ -36,7 +35,7 @@ func applyCustoms(node):
 					mesh_inst.set_owner(get_tree().edited_scene_root)
 
 	for child in node.get_children():
-		applyCustoms(child)
+		iterateScene(child)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

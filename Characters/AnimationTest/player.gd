@@ -41,10 +41,10 @@ var anim_blend = 0.2
 func switch_anim(name, speed = 1.0, blend = 0.2):
 	if animation_player.speed_scale != speed:
 		animation_player.speed_scale = speed
-		print("Speed " + str(speed))
+		#print("Speed " + str(speed))
 	
 	if animation_player.current_animation != name or blend != anim_blend:
-		print("Anim " + name)
+		#print("Anim " + name)
 		animation_player.play(name, blend)
 		anim_blend = blend
 
