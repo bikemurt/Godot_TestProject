@@ -2,3 +2,8 @@ res://Shaders/BlendTextures.gdshader
 res://Levels/UndergroundShipLaunch/UndergroundShipLaunch.tscn
 res://Scripts/GLTFImporter.gd
 res://Scripts/SceneInit.gd
+res://Materials/Terrain.tres
+res://Materials/Wall1.tres
+res://Materials/Wall2.tres
+res://Materials/Wall3.tres
+res://Levels/Andarin/Andarin.tscn

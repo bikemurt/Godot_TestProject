@@ -33,7 +33,8 @@ func iterateScene(node):
 				if meta_val == "simple":
 					mesh_inst.create_convex_collision()
 					mesh_inst.set_owner(get_tree().edited_scene_root)
-
+				if meta_val == "trimesh":
+					mesh_inst.create_trimesh_collision()
 	for child in node.get_children():
 		iterateScene(child)
 
