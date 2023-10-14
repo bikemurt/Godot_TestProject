@@ -1,3 +1,5 @@
+WorldEnvironment
+SpotLight3D
 StaticBody3D
 MeshInstance3D
 CollisionShape3D
@@ -8,5 +10,4 @@ Camera3D
 CharacterBody3D
 AnimationPlayer
 MultiMeshInstance3D
-WorldEnvironment
 DirectionalLight3D

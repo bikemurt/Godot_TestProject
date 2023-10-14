@@ -101,11 +101,9 @@ func registerTurn():
 			turning = 0
 			turn_retrigger_samples = 0
 
-
 var jumping = false
 var jumping_samples = 0
 func _physics_process(delta):
-	
 	registerTurn()
 	
 	# running

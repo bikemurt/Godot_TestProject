@@ -26,8 +26,10 @@ func iterateScene(node):
 					material.set_shader(shader)
 					
 					node.set_surface_override_material(int(surface), material)
-					
-					#node.set_owner(get_tree().edited_scene_root)
+			
+			if meta == "script":
+				print(meta + " " + meta_val)
+				node.set_script(load(meta_val))
 			
 			if meta == "collision":
 				if meta_val == "simple":
