@@ -20,6 +20,7 @@ func _post_import(scene):
 		deleteExtras()
 	
 	scene.set_script(load("res://Scripts/SceneInit.gd"))
+	scene.set_meta("run", true)
 	
 	return scene # Remember to return the imported scene
 

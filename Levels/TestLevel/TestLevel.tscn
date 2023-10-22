@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://duuqsbeit88of"]
+
+[ext_resource type="PackedScene" uid="uid://dmf8e6f0rnbsg" path="res://Levels/TestLevel/ColTest.gltf" id="1_ms5l8"]
+
+[node name="TestLevel" type="Node3D"]
+
+[node name="ColTest" parent="." instance=ExtResource("1_ms5l8")]
+metadata/run = false
