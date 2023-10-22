@@ -1,4 +1,4 @@
-# Blender Addon
+# Godot 4 Pipeline Blender Addon
 I think the most useful thing in this repo right now is the Blender add-on that I'm developing - it's a Godot GLTF Import pipeline.
 
 You can download the add-on here:
