@@ -23,6 +23,9 @@ When imported, these get attached as "Metas" in the Godot object. The GLTF scrip
 
 ## Blender Add-on functions
 - Select and Set Collisions: the main purpose of this is to set the "collision" custom property of many objects at once. You can use the "select" option to see which objects don't have collisions applied. Everything should get a collision, even if it is set to "Skip". Use the "None" option to select all remaining objects with no collisions
+- 
+  ![image](https://github.com/bikemurt/Godot_TestProject/assets/23486102/66541e81-78bb-40ed-9c45-6b9bfc9acba6)
+
 - Object Selection - the most useful setting for this right now is "Select Objects", since you can select which collisions you want from the previous step. "Collision Types Set" will apply the operation to every object that has a "collision" key (something you might not want to do)
 - Set Origins to Bounding Box - this step needs to be done prior to setting collision sizes as it places the collision object at the exact center of the object
 - Set Collision Sizes - this calculates the size of the collision object, when PARENTED to the main mesh
