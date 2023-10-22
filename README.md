@@ -33,7 +33,7 @@ When imported, these get attached as "Metas" in the Godot object. The GLTF scrip
 
 ## GLTF/Scene Init functions
 - GLTF sets metas on objects in Godot equal to the custom properties defined in Blender. If custom properties are set on the mesh in Blender, then it will be applied to each object that uses that mesh data
-- Scene initL
--   "collision" - Set various collision types as defined above from the blender add-on
+- Scene init:
+- -  "collision" - Set various collision types as defined above from the blender add-on
 -   "material" - right now this is a custom function for my project (a custom blend shader which uses two PBR materials)
 -   "script" - attaches a Godot script based on the script file path set in Blender
