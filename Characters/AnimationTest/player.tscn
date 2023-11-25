@@ -147,6 +147,8 @@ _data = {
 [node name="player" type="CharacterBody3D"]
 floor_stop_on_slope = false
 script = ExtResource("1_0i22h")
+sens_horizontal = 0.02
+sens_vertical = 0.2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

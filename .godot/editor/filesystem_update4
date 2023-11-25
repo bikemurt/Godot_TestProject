@@ -1,4 +1,8 @@
-res://Levels/TestLevel/TestLevel.tscn
+res://Levels/Andarin/Andarin.tscn
 res://Shaders/BlendTextures.gdshader
+res://Materials/Terrain.tres
+res://Materials/Wall1.tres
+res://Materials/Wall2.tres
+res://Materials/Wall3.tres
+res://Characters/AnimationTest/player.tscn
 res://Levels/UndergroundShipLaunch/UndergroundShipLaunch.tscn
-res://Levels/UndergroundShipLaunch/Anims/OpenDoor.res
