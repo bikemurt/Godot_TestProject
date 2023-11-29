@@ -6,3 +6,4 @@ res://Materials/Wall2.tres
 res://Materials/Wall3.tres
 res://Characters/AnimationTest/player.tscn
 res://Levels/UndergroundShipLaunch/UndergroundShipLaunch.tscn
+res://Scripts/SceneInit.gd

@@ -2,9 +2,7 @@
 
 [ext_resource type="Shader" path="res://Shaders/BlendTextures.gdshader" id="1_qnhvi"]
 [ext_resource type="Texture2D" uid="uid://bwvuifmttb4yh" path="res://Levels/Andarin/TerrainBlend.png" id="2_fa0tl"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vgv0u"]
-load_path = "res://.godot/imported/Grass_Bake1_PBR_Diffuse.png-7fbaedc6618e1a49bdd64d2ede774268.s3tc.ctex"
+[ext_resource type="Texture2D" uid="uid://bkcry7llkr1ah" path="res://Levels/Andarin/Import/Grass_Bake1_PBR_Diffuse.png" id="2_mdltt"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hvu8s"]
 load_path = "res://.godot/imported/Rocks_Bake1_PBR_Diffuse.png-b0820f071a95297908721bc9b6125ef0.s3tc.ctex"
@@ -28,7 +26,9 @@ shader_parameter/SpecularFac = 0.3
 shader_parameter/MixSpecular = true
 shader_parameter/SpecBlendOffset = 1.0
 shader_parameter/SpecBlendScale = 1.0
-shader_parameter/Albedo1 = SubResource("CompressedTexture2D_vgv0u")
+shader_parameter/UVFactor1 = 10.0
+shader_parameter/UVFactor2 = 1.0
+shader_parameter/Albedo1 = ExtResource("2_mdltt")
 shader_parameter/Albedo2 = SubResource("CompressedTexture2D_hvu8s")
 shader_parameter/MetalRough1 = SubResource("CompressedTexture2D_0qn3x")
 shader_parameter/MetalRough2 = SubResource("CompressedTexture2D_bcl80")

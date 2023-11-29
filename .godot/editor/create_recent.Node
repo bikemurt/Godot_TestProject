@@ -1,13 +1,14 @@
+SpringArm3D
 CollisionShape3D
 StaticBody3D
+MeshInstance3D
+MultiMeshInstance3D
 WorldEnvironment
 SpotLight3D
-MeshInstance3D
 RigidBody3D
 Node3D
 NodeTest
 Camera3D
 CharacterBody3D
 AnimationPlayer
-MultiMeshInstance3D
 DirectionalLight3D

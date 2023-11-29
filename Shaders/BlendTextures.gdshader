@@ -15,20 +15,27 @@ uniform bool MixSpecular;
 uniform float SpecBlendOffset;
 uniform float SpecBlendScale;
 
-void fragment() {	
+uniform float UVFactor1 = 1;
+uniform float UVFactor2 = 1;
+
+void fragment() {
+	
+	vec2 UVx1 = UV * UVFactor1;
+	vec2 UVx2 = UV * UVFactor2;
+	
 	vec3 factor = texture(BlendMap, UV2).xxx;
 	
-	vec3 a1 = texture(Albedo1, UV).xyz;
-	vec3 a2 = texture(Albedo2, UV).xyz;
+	vec3 a1 = texture(Albedo1, UVx1).xyz;
+	vec3 a2 = texture(Albedo2, UVx2).xyz;
 	
-	vec3 m1 = texture(MetalRough1, UV).xyz;
-	vec3 m2 = texture(MetalRough2, UV).xyz;
+	vec3 m1 = texture(MetalRough1, UVx1).xyz;
+	vec3 m2 = texture(MetalRough2, UVx2).xyz;
 
-	vec3 r1 = texture(MetalRough1, UV).xyz;
-	vec3 r2 = texture(MetalRough2, UV).xyz;
+	vec3 r1 = texture(MetalRough1, UVx1).xyz;
+	vec3 r2 = texture(MetalRough2, UVx2).xyz;
 	
-	vec3 n1 = texture(Normal1, UV).xyz;
-	vec3 n2 = texture(Normal2, UV).xyz;
+	vec3 n1 = texture(Normal1, UVx1).xyz;
+	vec3 n2 = texture(Normal2, UVx2).xyz;
 	
 	ALBEDO = mix(a1, a2, factor);
 	ROUGHNESS = mix(r1, r2, factor).y;

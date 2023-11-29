@@ -86,7 +86,40 @@ func iterateScene(node):
 						box.size = Vector3(size_x, size_y, size_z)
 						
 						setShape(col, box)
+				
+			if meta == "state":
+				if meta_val == "hide":
+					node.hide()
 					
+			if meta == "multimesh":
+				var full_path = node.get_parent().get_name() + "/" + meta_val
+				print(full_path)
+				
+				var source_node = node
+				
+				var target_node = node.get_parent().get_node(meta_val)
+				
+				var mm : MultiMesh = MultiMesh.new()
+				
+				mm.transform_format = MultiMesh.TRANSFORM_3D
+				mm.instance_count = 128
+				mm.visible_instance_count = -1
+				
+				mm.mesh = node.mesh
+				
+				for i in range(mm.instance_count):
+					var position = Transform3D()
+					position = position.translated(Vector3(randf() * 100 - 50, randf() * 50 - 25, randf() * 50 - 25))
+					
+					mm.set_instance_transform(i, position)
+				
+				var mm_inst : MultiMeshInstance3D = MultiMeshInstance3D.new()
+				mm_inst.multimesh = mm
+				
+				node.get_parent().add_child(mm_inst)
+				mm_inst.set_owner(get_tree().edited_scene_root)
+				
+				
 	for child in node.get_children():
 		iterateScene(child)
 

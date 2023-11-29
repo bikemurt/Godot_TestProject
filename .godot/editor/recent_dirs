@@ -1,4 +1,6 @@
 res://Scripts
+res://Levels/Andarin/Import
+res://MultiAssets/Grass01
 res://Levels/TestLevel
 res://Levels/UndergroundShipLaunch/Scripts
 res://Levels/UndergroundShipLaunch/Anims
@@ -6,7 +8,6 @@ res://Testing/Ball
 res://Scripts/Testing
 res://Characters/AnimationTest
 res://Levels/Andarin/ManualImport
-res://Levels/Andarin/Import
 res://Levels/Andarin/Materials
 res://Levels/Andarin
 res://Shaders
