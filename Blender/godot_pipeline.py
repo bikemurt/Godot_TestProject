@@ -46,6 +46,14 @@ class GodotPipelineProperties(PropertyGroup):
         ),
         default = "BOX"
     )
+    rigid : BoolProperty(
+        name = "Rigid Body",
+        default = False
+    )
+    script_path : StringProperty(
+        name = "Script Path",
+        default = ""
+    )
 
 class GodotPipelinePanel(bpy.types.Panel):
     bl_idname = "OBJECT_PT_godot_pipeline"
@@ -69,6 +77,9 @@ class GodotPipelinePanel(bpy.types.Panel):
         
         row = col.row()
         row.prop(props, "col_types")
+        
+        row = col.row()
+        row.prop(props, "rigid")
         
         row = col.row()
         row.operator("object.select_collisions", icon='NONE', text="Select Collisions")
@@ -104,6 +115,19 @@ class GodotPipelinePanel(bpy.types.Panel):
         row = col.row()
         row.operator("object.set_collision_size", icon='NONE', text="Set Collision Sizes")
         
+        col.separator()
+        
+        ###
+        
+        row = col.row()
+        row.label(text="Scripting:")
+        
+        row = col.row()
+        row.prop(props, "script_path")
+        
+        row = col.row()
+        row.operator("object.set_script", icon='NONE', text="Set Script Path")
+        
         ###
         
 class SetCollisions(bpy.types.Operator):
@@ -115,6 +139,9 @@ class SetCollisions(bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         props = scene.GodotPipelineProps
+
+        rigid = ""
+        if props.rigid: rigid = "-r"
         
         for obj in context.selected_objects:
             if props.col_types == "NONE":
@@ -127,7 +154,7 @@ class SetCollisions(bpy.types.Operator):
                     del obj["collision"]
                 
             else:
-                obj["collision"] = props.col_types.lower()
+                obj["collision"] = props.col_types.lower()+rigid
 
         return {'FINISHED'}
 
@@ -140,6 +167,9 @@ class SelectCollisions(bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         props = scene.GodotPipelineProps
+        
+        rigid = ""
+        if props.rigid: rigid = "-r"
         
         for obj in scene.objects:
             
@@ -158,7 +188,7 @@ class SelectCollisions(bpy.types.Operator):
                     obj.select_set(True)
             else:
                 for key, value in obj.items():    
-                    if key == "collision" and value == props.col_types.lower():
+                    if key == "collision" and value == props.col_types.lower()+rigid:
                         found = True
                     
                 if found:
@@ -240,6 +270,29 @@ class ResetOriginBB(bpy.types.Operator):
         
         return {'FINISHED'}
 
+class SetScript(bpy.types.Operator):
+    """Set Script Path"""
+    bl_idname = "object.set_script"
+    bl_label = "Set Script Path"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        props = scene.GodotPipelineProps
+        
+        
+        if props.object_selection == "SEL":
+            for obj in context.selected_objects:
+                obj["script"] = props.script_path
+        
+        if props.object_selection == "COL":
+            for obj in scene.objects:
+                for key, value in obj.items():    
+                    if key == "collision":
+                        obj["script"] = props.script_path
+        
+        return {'FINISHED'}
+
 def menu_func1(self, context):
     self.layout.operator(SetCollisionSize.bl_idname)
 
@@ -260,6 +313,7 @@ def register():
     bpy.utils.register_class(SetCollisions)
     bpy.utils.register_class(SetCollisionSize)
     bpy.utils.register_class(ResetOriginBB)
+    bpy.utils.register_class(SetScript)
 
 def unregister():
     # props
@@ -273,6 +327,7 @@ def unregister():
     bpy.utils.unregister_class(SetCollisions)
     bpy.utils.unregister_class(SetCollisionSize)
     bpy.utils.unregister_class(ResetOriginBB)
+    bpy.utils.unregister_class(SetScript)
 
 
 # This allows you to run the script directly from Blender's Text editor
