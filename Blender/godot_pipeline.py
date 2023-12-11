@@ -26,14 +26,6 @@ class GodotPipelineProperties(PropertyGroup):
         name = 'Collision Margin',
         default = 1.03
     )
-    object_selection : EnumProperty(
-        name =  "Objects",
-        items = (
-            ("COL", "Collision Types Set", ""),
-            ("SEL", "Selected Objects", "")
-        ),
-        default = "COL"
-    )
     col_types : EnumProperty(
         name =  "Collision",
         items = (
@@ -53,6 +45,14 @@ class GodotPipelineProperties(PropertyGroup):
     script_path : StringProperty(
         name = "Script Path",
         default = ""
+    )
+    mesh_data : BoolProperty(
+        name = "Apply to Mesh",
+        default = False
+    )
+    col_only: BoolProperty(
+        name = "Collision Only",
+        default = False
     )
 
 class GodotPipelinePanel(bpy.types.Panel):
@@ -79,23 +79,19 @@ class GodotPipelinePanel(bpy.types.Panel):
         row.prop(props, "col_types")
         
         row = col.row()
-        row.prop(props, "rigid")
-        
-        row = col.row()
         row.operator("object.select_collisions", icon='NONE', text="Select Collisions")
         
         row = col.row()
+        row.prop(props, "rigid")
+        
+        row = col.row()
+        row.prop(props, "mesh_data")
+        
+        row = col.row()
+        row.prop(props, "col_only")
+        
+        row = col.row()
         row.operator("object.set_collisions", icon='NONE', text="Set Collisions")
-        
-        col.separator()
-        
-        ###
-        
-        row = col.row()
-        row.label(text="Object Selection:")
-        
-        row = col.row()
-        row.prop(props, "object_selection")
         
         col.separator()
         
@@ -143,7 +139,12 @@ class SetCollisions(bpy.types.Operator):
         rigid = ""
         if props.rigid: rigid = "-r"
         
+        col_only = ""
+        if props.col_only: col_only = "-c"
+        
         for obj in context.selected_objects:
+            if props.mesh_data: obj = obj.data
+            
             if props.col_types == "NONE":
                 found = False
                 for key, value in obj.items():    
@@ -154,7 +155,7 @@ class SetCollisions(bpy.types.Operator):
                     del obj["collision"]
                 
             else:
-                obj["collision"] = props.col_types.lower()+rigid
+                obj["collision"] = props.col_types.lower()+rigid+col_only
 
         return {'FINISHED'}
 
@@ -170,6 +171,9 @@ class SelectCollisions(bpy.types.Operator):
         
         rigid = ""
         if props.rigid: rigid = "-r"
+        
+        col_only = ""
+        if props.col_only: col_only = "-c"
         
         for obj in scene.objects:
             
@@ -188,7 +192,7 @@ class SelectCollisions(bpy.types.Operator):
                     obj.select_set(True)
             else:
                 for key, value in obj.items():    
-                    if key == "collision" and value == props.col_types.lower()+rigid:
+                    if key == "collision" and value == props.col_types.lower()+rigid+colonly:
                         found = True
                     
                 if found:
@@ -203,25 +207,27 @@ class SetCollisionSize(bpy.types.Operator):
     bl_label = "Set Collision Size"
     bl_options = {'REGISTER', 'UNDO'}
 
-    def set_size(self, obj, margin):
-        for key, value in obj.items():    
+    def set_size(self, obj, dim_obj, margin):
+        
+        for key, value in obj.items():
+            
+            value = value.replace("-r", "").replace("-c", "")
             if key == "collision":
-                
                 if value == "box":
                     # divide out by scale, because the collision object in godot is parented to the actual mesh,
                     # so it will get the parent's scale (basically we are preventing the scale from being applied twice)
-                    obj["size_x"] = str(round(margin * obj.dimensions[0] / obj.scale[0], 4))
-                    obj["size_z"] = str(round(margin * obj.dimensions[1] / obj.scale[1], 4))
-                    obj["size_y"] = str(round(margin * obj.dimensions[2] / obj.scale[2], 4))
+                    obj["size_x"] = str(round(margin * dim_obj.dimensions[0] / dim_obj.scale[0], 4))
+                    obj["size_z"] = str(round(margin * dim_obj.dimensions[1] / dim_obj.scale[1], 4))
+                    obj["size_y"] = str(round(margin * dim_obj.dimensions[2] / dim_obj.scale[2], 4))
                 
                 if value == "cylinder":
                     obj["height"] = str(round(margin * obj.dimensions[2] / obj.scale[2], 4))
                     
                     # radius is calculated in x, y plane
                     # take larger value
-                    r = 0.5 * obj.dimensions[0] / obj.scale[0]
-                    if obj.dimensions[1] > obj.dimensions[0]:
-                        r = 0.5 * obj.dimensions[1] / obj.scale[1]
+                    r = 0.5 * dim_obj.dimensions[0] / dim_obj.scale[0]
+                    if dim_obj.dimensions[1] > dim_obj.dimensions[0]:
+                        r = 0.5 * dim_obj.dimensions[1] / dim_obj.scale[1]
                     
                     obj["radius"] = str(round(margin * r, 4))
                     
@@ -232,18 +238,12 @@ class SetCollisionSize(bpy.types.Operator):
         
         margin = props.collision_margin
         
-        if props.object_selection == "SEL":
-            for obj in context.selected_objects:
-                self.set_size(obj, margin)
+        for obj in context.selected_objects:
+            dim_obj = obj
+            if props.mesh_data: obj = obj.data
+            self.set_size(obj, dim_obj, margin)
         
-        if props.object_selection == "COL":
-            for obj in scene.objects:
-                self.set_size(obj, margin)
-                
-    
         return {'FINISHED'}
-
-
 
 class ResetOriginBB(bpy.types.Operator):
     """Reset Origin Bounding Box"""
@@ -251,22 +251,11 @@ class ResetOriginBB(bpy.types.Operator):
     bl_label = "Reset Origin Bounding Box"
     bl_options = {'REGISTER', 'UNDO'}
 
-    def set_bb(self):
-        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
-
     def execute(self, context):
         scene = context.scene
         props = scene.GodotPipelineProps
         
-        if props.object_selection == "SEL":
-            self.set_bb()
-        
-        if props.object_selection == "COL":
-            for obj in scene.objects:
-                for key, value in obj.items():    
-                    if key == "collision":
-                        obj.select_set(True)
-                        self.set_bb()
+        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
         
         return {'FINISHED'}
 
@@ -280,24 +269,11 @@ class SetScript(bpy.types.Operator):
         scene = context.scene
         props = scene.GodotPipelineProps
         
-        
-        if props.object_selection == "SEL":
-            for obj in context.selected_objects:
-                obj["script"] = props.script_path
-        
-        if props.object_selection == "COL":
-            for obj in scene.objects:
-                for key, value in obj.items():    
-                    if key == "collision":
-                        obj["script"] = props.script_path
+        for obj in context.selected_objects:
+            if props.mesh_data: obj = obj.data
+            obj["script"] = props.script_path
         
         return {'FINISHED'}
-
-def menu_func1(self, context):
-    self.layout.operator(SetCollisionSize.bl_idname)
-
-def menu_func2(self, context):
-    self.layout.operator(ResetOriginBB.bl_idname)
 
 def register():
     
