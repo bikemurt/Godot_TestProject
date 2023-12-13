@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cqasqlfvy3ot0"]
+
+[ext_resource type="Script" path="res://Modules/RigidBody_PI/RigidBody_PI.gd" id="1_8jbcq"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_arpi4"]
+friction = 0.5
+
+[node name="RigidBody_PI" type="RigidBody3D"]
+physics_material_override = SubResource("PhysicsMaterial_arpi4")
+lock_rotation = true
+script = ExtResource("1_8jbcq")
