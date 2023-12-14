@@ -4,4 +4,4 @@ res://Materials/Terrain.tres
 res://Materials/Wall1.tres
 res://Materials/Wall2.tres
 res://Materials/Wall3.tres
-res://Modules/RigidBody_PI/Motion_Planner.tres
+res://Scripts/SceneInit.gd

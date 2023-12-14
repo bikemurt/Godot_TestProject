@@ -42,8 +42,8 @@ class GodotPipelineProperties(PropertyGroup):
         name = "Rigid Body",
         default = False
     )
-    script_path : StringProperty(
-        name = "Script Path",
+    set_path : StringProperty(
+        name = "Set Path",
         default = ""
     )
     mesh_data : BoolProperty(
@@ -52,6 +52,21 @@ class GodotPipelineProperties(PropertyGroup):
     )
     col_only: BoolProperty(
         name = "Collision Only",
+        default = False
+    )
+    path_options : EnumProperty(
+        name =  "Path Type",
+        items = (
+            ("script", "Script", ""),
+            ("material_0", "Material 0", ""),
+            ("material_1", "Material 1", ""),
+            ("material_2", "Material 2", ""),
+            ("shader", "Shader", "")
+        ),
+        default = "script"
+    )
+    display_wire: BoolProperty(
+        name = "Display Wireframe",
         default = False
     )
 
@@ -68,61 +83,64 @@ class GodotPipelinePanel(bpy.types.Panel):
         scene = context.scene
         props = scene.GodotPipelineProps
         
-        col = layout.column()
-        
         ###
         
-        row = col.row()
-        row.label(text="Collision Selecting and Setting:")
+        box = layout.box()
         
-        row = col.row()
+        row = box.row()
+        row.label(text="Global Settings:")
+        
+        row = box.row()
+        row.prop(props, "mesh_data")
+            
+        ###
+        
+        box = layout.box()
+        
+        row = box.row()
+        row.label(text="Type:")
+        
+        row = box.row()
         row.prop(props, "col_types")
         
-        row = col.row()
+        row = box.row()
         row.operator("object.select_collisions", icon='NONE', text="Select Collisions")
         
-        row = col.row()
+        row = box.row()
         row.prop(props, "rigid")
         
-        row = col.row()
-        row.prop(props, "mesh_data")
-        
-        row = col.row()
+        row = box.row()
         row.prop(props, "col_only")
         
-        row = col.row()
+        row = box.row()
+        row.prop(props, "display_wire")
+        
+        row = box.row()
         row.operator("object.set_collisions", icon='NONE', text="Set Collisions")
         
-        col.separator()
-        
-        ###
-        
-        row = col.row()
-        row.label(text="Collisions:")
-        
-        row = col.row()
+        row = box.row()
         row.operator("object.reset_origin_bb", icon='NONE', text="Set Origins to Bounding Box")
         
-        col.separator()
+        box.separator()
         
-        row = col.row()
+        row = box.row()
         row.prop(props, "collision_margin")
         
-        row = col.row()
+        row = box.row()
         row.operator("object.set_collision_size", icon='NONE', text="Set Collision Sizes")
-        
-        col.separator()
         
         ###
         
-        row = col.row()
-        row.label(text="Scripting:")
+        box = layout.box()
         
-        row = col.row()
-        row.prop(props, "script_path")
+        row = box.row()
+        row.prop(props, "set_path")
         
-        row = col.row()
-        row.operator("object.set_script", icon='NONE', text="Set Script Path")
+        row = box.row()
+        row.prop(props, "path_options")
+        
+        row = box.row()
+        row.operator("object.set_path", icon='NONE', text="Set Path")
         
         ###
         
@@ -143,6 +161,11 @@ class SetCollisions(bpy.types.Operator):
         if props.col_only: col_only = "-c"
         
         for obj in context.selected_objects:
+            if props.display_wire:
+                obj.display_type = "WIRE"
+            else:
+                obj.display_type = "TEXTURED"
+            
             if props.mesh_data: obj = obj.data
             
             if props.col_types == "NONE":
@@ -192,7 +215,7 @@ class SelectCollisions(bpy.types.Operator):
                     obj.select_set(True)
             else:
                 for key, value in obj.items():    
-                    if key == "collision" and value == props.col_types.lower()+rigid+colonly:
+                    if key == "collision" and value == props.col_types.lower()+rigid+col_only:
                         found = True
                     
                 if found:
@@ -259,10 +282,10 @@ class ResetOriginBB(bpy.types.Operator):
         
         return {'FINISHED'}
 
-class SetScript(bpy.types.Operator):
-    """Set Script Path"""
-    bl_idname = "object.set_script"
-    bl_label = "Set Script Path"
+class SetPath(bpy.types.Operator):
+    """Set Path"""
+    bl_idname = "object.set_path"
+    bl_label = "Set Path"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -271,42 +294,21 @@ class SetScript(bpy.types.Operator):
         
         for obj in context.selected_objects:
             if props.mesh_data: obj = obj.data
-            obj["script"] = props.script_path
+            obj[props.path_options] = props.set_path
         
         return {'FINISHED'}
 
+classes = [GodotPipelineProperties, GodotPipelinePanel, SelectCollisions, SetCollisions, SetCollisionSize, ResetOriginBB, SetPath]
+
 def register():
+    for cls in classes:
+        bpy.utils.register_class(cls)
     
-    # props
-    bpy.utils.register_class(GodotPipelineProperties)
     bpy.types.Scene.GodotPipelineProps = PointerProperty(type = GodotPipelineProperties)
 
-    # UI
-    bpy.utils.register_class(GodotPipelinePanel)
-
-    # functions
-    bpy.utils.register_class(SelectCollisions)
-    bpy.utils.register_class(SetCollisions)
-    bpy.utils.register_class(SetCollisionSize)
-    bpy.utils.register_class(ResetOriginBB)
-    bpy.utils.register_class(SetScript)
-
 def unregister():
-    # props
-    bpy.utils.unregister_class(GodotPipelineProperties)
-    
-    # UI
-    bpy.utils.unregister_class(GodotPipelinePanel)
-    
-    # functions
-    bpy.utils.unregister_class(SelectCollisions)
-    bpy.utils.unregister_class(SetCollisions)
-    bpy.utils.unregister_class(SetCollisionSize)
-    bpy.utils.unregister_class(ResetOriginBB)
-    bpy.utils.unregister_class(SetScript)
+    for cls in classes:
+        bpy.utils.unregister_class(cls)
 
-
-# This allows you to run the script directly from Blender's Text editor
-# to test the add-on without having to install it.
 if __name__ == "__main__":
     register()
