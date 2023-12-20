@@ -34,6 +34,7 @@ class GodotPipelineProperties(PropertyGroup):
             ("SKIP", "Skip", ""),
             ("TRIMESH", "Trimesh", ""),
             ("SIMPLE", "Simple", ""),
+            ("BODYONLY", "Body Only", ""),
             ("NONE", "None", "")
         ),
         default = "BOX"
@@ -68,6 +69,18 @@ class GodotPipelineProperties(PropertyGroup):
     display_wire: BoolProperty(
         name = "Display Wireframe",
         default = False
+    )
+    manual_size_x : FloatProperty(
+        name = 'X',
+        default = 0
+    )
+    manual_size_y : FloatProperty(
+        name = 'Y',
+        default = 0
+    )
+    manual_size_z : FloatProperty(
+        name = 'Z',
+        default = 0
     )
 
 class GodotPipelinePanel(bpy.types.Panel):
@@ -128,6 +141,21 @@ class GodotPipelinePanel(bpy.types.Panel):
         
         row = box.row()
         row.operator("object.set_collision_size", icon='NONE', text="Set Collision Sizes")
+        
+        ###
+        
+        #box = layout.box()
+        
+        #row = box.row()
+        #row.label(text="Manual Box Dimensions: (Godot Axes)")
+        
+        #row = box.row()
+        #row.prop(props, "manual_size_x")
+        #row.prop(props, "manual_size_y")
+        #row.prop(props, "manual_size_z")
+        
+        #row = box.row()
+        #row.operator("object.set_box_xyz", icon='NONE', text="Set")
         
         ###
         
@@ -282,6 +310,26 @@ class ResetOriginBB(bpy.types.Operator):
         
         return {'FINISHED'}
 
+   
+class SetBoxXYZ(bpy.types.Operator):
+    """Set Box XYZ"""
+    bl_idname = "object.set_box_xyz"
+    bl_label = "Set Box XYZ"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        props = scene.GodotPipelineProps
+
+        for obj in context.selected_objects:
+            if props.mesh_data: obj = obj.data
+            
+            obj["size_x"] = props.manual_size_x
+            obj["size_y"] = props.manual_size_y
+            obj["size_z"] = props.manual_size_z
+
+        return {'FINISHED'}
+
 class SetPath(bpy.types.Operator):
     """Set Path"""
     bl_idname = "object.set_path"
@@ -298,7 +346,8 @@ class SetPath(bpy.types.Operator):
         
         return {'FINISHED'}
 
-classes = [GodotPipelineProperties, GodotPipelinePanel, SelectCollisions, SetCollisions, SetCollisionSize, ResetOriginBB, SetPath]
+classes = [GodotPipelineProperties, GodotPipelinePanel, SelectCollisions,\
+    SetCollisions, SetCollisionSize, ResetOriginBB, SetBoxXYZ, SetPath]
 
 def register():
     for cls in classes:

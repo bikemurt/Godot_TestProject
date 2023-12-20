@@ -4,6 +4,8 @@ extends Node
 
 var reparent_nodes = []
 var delete_nodes = []
+var staticbody_cleanup_nodes = []
+var rigidbody_cleanup_nodes = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -14,6 +16,8 @@ func _ready():
 			
 			reparent_pass()
 			delete_pass()
+			staticbody_cleanup()
+			rigidbody_cleanup()
 			
 			set_meta("run", false)
 
@@ -28,13 +32,60 @@ func delete_pass():
 	for node in delete_nodes:
 		node.queue_free()
 
+func staticbody_cleanup():
+	for node in staticbody_cleanup_nodes:
+		var staticbody : StaticBody3D
+		for child in node.get_children():
+			if child is StaticBody3D:
+				staticbody = child
+		
+		var col_list = []
+		for child in node.get_children():
+			if child is CollisionShape3D:
+				col_list.append(child)
+		
+		for col in col_list:
+			col.reparent(staticbody)
+			col.set_owner(get_tree().edited_scene_root)
+
+func rigidbody_cleanup():
+	for node in rigidbody_cleanup_nodes:
+		# expect a child to be a meshInstance3D
+		print(node.name)
+		var col_list = []
+		for child in node.get_children():
+			if child is CollisionShape3D:
+				col_list.append(child)
+				
+		for col in col_list:
+			col.reparent(node.get_parent())
+			col.set_owner(get_tree().edited_scene_root)	
+
 func set_children_scene_root(node):
 	for child in node.get_children():
 		set_children_scene_root(child)
 		child.set_owner(get_tree().edited_scene_root)
 
-func set_generic_collision(node : Node3D, rigid_body=false, collision_only=false):
+func set_body(node : Node3D, rigid_body=false):
+	var body = StaticBody3D.new()
+	body.name = node.name + "_StaticBody3D"
+
+	if rigid_body:
+		body = RigidBody3D.new()
+		body.name = node.name + "_RigidBody3D"
+		#body.transform = node.transform
+		
+		reparent_nodes.append([node, body])
+		
+		node.get_parent().add_child(body)
+	else:
+		node.add_child(body)
+
+	body.set_owner(get_tree().edited_scene_root)
 	
+	return body
+
+func set_generic_collision(node : Node3D, rigid_body=false, collision_only=false):
 	var collision = CollisionShape3D.new()
 	collision.name = node.name + "_CollisionShape3D"
 	
@@ -44,22 +95,7 @@ func set_generic_collision(node : Node3D, rigid_body=false, collision_only=false
 		return [node, collision]
 	
 	else:
-		var body = StaticBody3D.new()
-		body.name = node.name + "_StaticBody3D"
-	
-		if rigid_body:
-			body = RigidBody3D.new()
-			body.name = node.name + "_RigidBody3D"
-			#body.transform = node.transform
-			
-			reparent_nodes.append([node, body])
-			
-			node.get_parent().add_child(body)
-		else:
-			node.add_child(body)
-	
-		body.set_owner(get_tree().edited_scene_root)
-		
+		var body = set_body(node, rigid_body)
 		return [body, collision]	
 
 func set_shape(col, shape):
@@ -127,7 +163,7 @@ func iterate_scene(node):
 				
 				if meta_val == "cylinder":
 					if "height" in metas and "radius" in metas:
-						var col = set_generic_collision(node)
+						var col = set_generic_collision(node, rigid_body, col_only)
 						
 						var cyl = CylinderShape3D.new()
 						
@@ -153,6 +189,13 @@ func iterate_scene(node):
 						box.size = Vector3(size_x, size_y, size_z)
 						
 						set_shape(col, box)
+				
+				if meta_val == "bodyonly":
+					set_body(node, rigid_body)
+					if rigid_body:
+						rigidbody_cleanup_nodes.append(node)
+					else:
+						staticbody_cleanup_nodes.append(node)
 				
 			if meta == "state":
 				if meta_val == "hide":
