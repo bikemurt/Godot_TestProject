@@ -7,7 +7,12 @@
 	"scenes":[
 		{
 			"extras":{
-				"SimpleBake_Props":{}
+				"SimpleBake_Props":{},
+				"GodotPipelineProps":{
+					"col_types":3,
+					"path_options":1,
+					"set_path":"res://Levels/TerrainTest/Shaders/BlendMaterial2.tres"
+				}
 			},
 			"name":"Scene",
 			"nodes":[
@@ -17,6 +22,11 @@
 	],
 	"nodes":[
 		{
+			"extras":{
+				"collision":"trimesh",
+				"shader":"res://Levels/TerrainTest/Shaders/BlendTextures.gdshader",
+				"material_0":"res://Levels/TerrainTest/Shaders/BlendMaterial2.tres"
+			},
 			"mesh":0,
 			"name":"Plane"
 		}

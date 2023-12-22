@@ -1,10 +1,3 @@
 res://Levels/TerrainTest/TerrainTest.tscn
-res://Levels/TerrainTest/Shaders/BlendTextures.gdshader
-res://Levels/TerrainTest/Shaders/BlendMaterial.tres
 res://Shaders/BlendTextures.gdshader
-res://Materials/Terrain.tres
-res://Materials/Wall1.tres
-res://Materials/Wall2.tres
-res://Materials/Wall3.tres
-res://Levels/Andarin/Andarin.tscn
 res://Levels/TerrainTest/Shaders/BlendMaterial2.tres
