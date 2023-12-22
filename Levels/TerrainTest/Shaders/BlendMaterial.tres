@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" load_steps=7 format=3 uid="uid://bdf2o07sxrvv3"]
+
+[ext_resource type="Shader" path="res://Levels/TerrainTest/Shaders/BlendTextures.gdshader" id="1_knkip"]
+[ext_resource type="Texture2D" path="res://Levels/TerrainTest/Textures/grass/albedo-rough.dds" id="2_2sq8i"]
+[ext_resource type="Texture2D" path="res://Levels/TerrainTest/Textures/rock/albedo-roughness.dds" id="3_ka6pq"]
+[ext_resource type="Texture2D" uid="uid://dwotl43dknej0" path="res://Levels/TerrainTest/Import/BlendMap.png" id="4_fhfm1"]
+[ext_resource type="Texture2D" uid="uid://wnbvaoca3qrl" path="res://Levels/TerrainTest/Textures/grass/Ground037_4K-JPG_NormalGL.jpg" id="5_0ppmc"]
+[ext_resource type="Texture2D" uid="uid://cuvj75vd5j7rq" path="res://Levels/TerrainTest/Textures/rock/Rock030_4K-JPG_NormalGL.jpg" id="6_xqmbj"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_knkip")
+shader_parameter/UVFactor1 = 20.0
+shader_parameter/UVFactor2 = 10.0
+shader_parameter/Metal1 = 0.2
+shader_parameter/Metal2 = 0.5
+shader_parameter/Spec1 = 0.5
+shader_parameter/Spec2 = 0.8
+shader_parameter/AlbedoRough1 = ExtResource("2_2sq8i")
+shader_parameter/AlbedoRough2 = ExtResource("3_ka6pq")
+shader_parameter/Normal1 = ExtResource("5_0ppmc")
+shader_parameter/Normal2 = ExtResource("6_xqmbj")
+shader_parameter/BlendMap = ExtResource("4_fhfm1")
