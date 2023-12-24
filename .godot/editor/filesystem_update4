@@ -1,3 +1,5 @@
 res://Levels/TerrainTest/TerrainTest.tscn
 res://Shaders/BlendTextures.gdshader
 res://Levels/TerrainTest/Shaders/BlendMaterial2.tres
+res://Scripts/SceneInit.gd
+res://addons/multimesh_scatter/multimesh_scatter.gd

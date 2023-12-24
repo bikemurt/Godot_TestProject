@@ -127,6 +127,28 @@ func iterate_scene(node):
 			if meta == "script":
 				node.set_script(load(meta_val))
 			
+			if meta == "multimesh_target":
+				var scatter = MultiMeshInstance3D.new()
+				scatter.name = "MultiMeshScatter"
+				node.get_parent().add_child(scatter)
+				scatter.set_script(load("res://addons/multimesh_scatter/multimesh_scatter.gd"))			
+				
+				var placement = Vector3(0,0,0)
+				placement.x = float(node.get_meta("size_x"))
+				placement.y = float(node.get_meta("size_y"))
+				placement.z = float(node.get_meta("size_z"))
+				scatter.set("placement_size", placement)
+				scatter.transform = node.transform
+				
+				var target : MeshInstance3D = get_node(meta_val)
+				
+				var mm = scatter.multimesh
+				scatter.multimesh.mesh = target.mesh
+				
+				scatter.set_owner(get_tree().edited_scene_root)
+				
+				delete_nodes.append(node)
+			
 			if meta == "collision":
 				var rigid_body = false
 				var col_only = false

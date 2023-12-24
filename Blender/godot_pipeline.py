@@ -70,18 +70,6 @@ class GodotPipelineProperties(PropertyGroup):
         name = "Display Wireframe",
         default = False
     )
-    manual_size_x : FloatProperty(
-        name = 'X',
-        default = 0
-    )
-    manual_size_y : FloatProperty(
-        name = 'Y',
-        default = 0
-    )
-    manual_size_z : FloatProperty(
-        name = 'Z',
-        default = 0
-    )
 
 class GodotPipelinePanel(bpy.types.Panel):
     bl_idname = "OBJECT_PT_godot_pipeline"
@@ -142,23 +130,6 @@ class GodotPipelinePanel(bpy.types.Panel):
         row = box.row()
         row.operator("object.set_collision_size", icon='NONE', text="Set Collision Sizes")
         
-        ###
-        
-        #box = layout.box()
-        
-        #row = box.row()
-        #row.label(text="Manual Box Dimensions: (Godot Axes)")
-        
-        #row = box.row()
-        #row.prop(props, "manual_size_x")
-        #row.prop(props, "manual_size_y")
-        #row.prop(props, "manual_size_z")
-        
-        #row = box.row()
-        #row.operator("object.set_box_xyz", icon='NONE', text="Set")
-        
-        ###
-        
         box = layout.box()
         
         row = box.row()
@@ -169,6 +140,14 @@ class GodotPipelinePanel(bpy.types.Panel):
         
         row = box.row()
         row.operator("object.set_path", icon='NONE', text="Set Path")
+        
+        box = layout.box()
+        
+        row = box.row()
+        row.prop_search(context.scene, "target", context.scene, "objects", text="Mesh")
+        
+        row = box.row()
+        row.operator("object.set_multimesh", icon='NONE', text="Set Multimesh")
         
         ###
         
@@ -310,25 +289,6 @@ class ResetOriginBB(bpy.types.Operator):
         
         return {'FINISHED'}
 
-   
-class SetBoxXYZ(bpy.types.Operator):
-    """Set Box XYZ"""
-    bl_idname = "object.set_box_xyz"
-    bl_label = "Set Box XYZ"
-    bl_options = {'REGISTER', 'UNDO'}
-
-    def execute(self, context):
-        scene = context.scene
-        props = scene.GodotPipelineProps
-
-        for obj in context.selected_objects:
-            if props.mesh_data: obj = obj.data
-            
-            obj["size_x"] = props.manual_size_x
-            obj["size_y"] = props.manual_size_y
-            obj["size_z"] = props.manual_size_z
-
-        return {'FINISHED'}
 
 class SetPath(bpy.types.Operator):
     """Set Path"""
@@ -346,13 +306,35 @@ class SetPath(bpy.types.Operator):
         
         return {'FINISHED'}
 
+class SetMultimesh(bpy.types.Operator):
+    """Set Multimesh"""
+    bl_idname = "object.set_multimesh"
+    bl_label = "Set Multimesh"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        props = scene.GodotPipelineProps
+        
+        margin = props.collision_margin
+        for obj in context.selected_objects:
+            obj.display_type = "BOUNDS"
+            bpy.ops.object.reset_origin_bb()
+            obj["size_x"] = str(round(margin * obj.dimensions[0] / obj.scale[0], 4))
+            obj["size_z"] = str(round(margin * obj.dimensions[1] / obj.scale[1], 4))
+            obj["size_y"] = str(round(margin * obj.dimensions[2] / obj.scale[2], 4))
+            obj["multimesh_target"] = scene.target.name
+        
+        return {'FINISHED'}
+
 classes = [GodotPipelineProperties, GodotPipelinePanel, SelectCollisions,\
-    SetCollisions, SetCollisionSize, ResetOriginBB, SetBoxXYZ, SetPath]
+    SetCollisions, SetCollisionSize, ResetOriginBB, SetPath, SetMultimesh]
 
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
-    
+
+    bpy.types.Scene.target = bpy.props.PointerProperty(type=bpy.types.Object)    
     bpy.types.Scene.GodotPipelineProps = PointerProperty(type = GodotPipelineProperties)
 
 def unregister():

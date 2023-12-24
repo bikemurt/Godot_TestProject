@@ -21,7 +21,7 @@ window/size/mode=3
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/multimesh_scatter/plugin.cfg")
 
 [input]
 

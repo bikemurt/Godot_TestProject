@@ -9,14 +9,26 @@
 			"extras":{
 				"SimpleBake_Props":{},
 				"GodotPipelineProps":{
-					"col_types":3,
+					"col_types":0,
 					"path_options":1,
-					"set_path":"res://Levels/TerrainTest/Shaders/BlendMaterial2.tres"
+					"set_path":"res://Levels/TerrainTest/Shaders/BlendMaterial2.tres",
+					"display_wire":1,
+					"collision_margin":1.0
+				},
+				"GRT_Action_Bakery_Global_Settings":{
+					"Source_Armature":{},
+					"Target_Armature":{}
+				},
+				"target":{
+					"name":"Tree",
+					"type":"Object"
 				}
 			},
 			"name":"Scene",
 			"nodes":[
-				0
+				0,
+				1,
+				2
 			]
 		}
 	],
@@ -28,7 +40,34 @@
 				"material_0":"res://Levels/TerrainTest/Shaders/BlendMaterial2.tres"
 			},
 			"mesh":0,
-			"name":"Plane"
+			"name":"Terrain"
+		},
+		{
+			"extras":{
+				"size_x":"208.6537",
+				"size_z":"244.5376",
+				"size_y":"39.7152",
+				"multimesh_target":"Tree"
+			},
+			"mesh":1,
+			"name":"MultiMesh",
+			"translation":[
+				-45.841148376464844,
+				6.1409101486206055,
+				29.73333740234375
+			]
+		},
+		{
+			"extras":{
+				"MaxHandle":2,
+				"poliigon":"Models;TreeFraserFirLarge001",
+				"poliigon_lod":"LOD0",
+				"SB_uv_used_for_bake":"UVMap",
+				"SB_copy_and_apply_from":"TreeFraserFirLarge001_Needles01_Geo_LOD0",
+				"SB_bake_operation_id":"b4e9a452-2695-47e0-8f3c-1b4a1662e9e3"
+			},
+			"mesh":2,
+			"name":"Tree"
 		}
 	],
 	"materials":[
@@ -42,11 +81,35 @@
 				"metallicFactor":0,
 				"roughnessFactor":0.5
 			}
+		},
+		{
+			"alphaMode":"BLEND",
+			"doubleSided":true,
+			"extras":{
+				"lp":{
+					"uid":"0ec4eb3f34"
+				},
+				"DM":{},
+				"SB_baked_orig_objects":[
+					"TreeFraserFirLarge001_Needles01_Geo_LOD0"
+				],
+				"SB_bake_operation_id":"b4e9a452-2695-47e0-8f3c-1b4a1662e9e3"
+			},
+			"name":"Tree",
+			"normalTexture":{
+				"index":1
+			},
+			"pbrMetallicRoughness":{
+				"baseColorTexture":{
+					"index":2
+				},
+				"metallicFactor":0
+			}
 		}
 	],
 	"meshes":[
 		{
-			"name":"Plane",
+			"name":"Terrain",
 			"primitives":[
 				{
 					"attributes":{
@@ -58,12 +121,47 @@
 					"material":0
 				}
 			]
+		},
+		{
+			"name":"Plane.001",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":4,
+						"NORMAL":5,
+						"TEXCOORD_0":6
+					},
+					"indices":7
+				}
+			]
+		},
+		{
+			"name":"Tree",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":8,
+						"NORMAL":9,
+						"TEXCOORD_0":10
+					},
+					"indices":11,
+					"material":1
+				}
+			]
 		}
 	],
 	"textures":[
 		{
 			"sampler":0,
 			"source":0
+		},
+		{
+			"sampler":0,
+			"source":1
+		},
+		{
+			"sampler":0,
+			"source":2
 		}
 	],
 	"images":[
@@ -71,6 +169,16 @@
 			"mimeType":"image/png",
 			"name":"BlendMap",
 			"uri":"BlendMap.png"
+		},
+		{
+			"mimeType":"image/png",
+			"name":"TreeFraserFirLarge001_Needles01_Geo_LOD0_Bake1_PBR_Normal",
+			"uri":"TreeFraserFirLarge001_Needles01_Geo_LOD0_Bake1_PBR_Normal.png"
+		},
+		{
+			"mimeType":"image/png",
+			"name":"TreeFraserFirLarge001_Needles01_Geo_LOD0_Bake1_PBR_Diffuse",
+			"uri":"TreeFraserFirLarge001_Needles01_Geo_LOD0_Bake1_PBR_Diffuse.png"
 		}
 	],
 	"accessors":[
@@ -107,6 +215,74 @@
 			"componentType":5123,
 			"count":58806,
 			"type":"SCALAR"
+		},
+		{
+			"bufferView":4,
+			"componentType":5126,
+			"count":5018,
+			"max":[
+				103.29206848144531,
+				19.857589721679688,
+				122.268798828125
+			],
+			"min":[
+				-104.32684326171875,
+				-19.857589721679688,
+				-119.64741516113281
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":5,
+			"componentType":5126,
+			"count":5018,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":6,
+			"componentType":5126,
+			"count":5018,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":7,
+			"componentType":5123,
+			"count":29148,
+			"type":"SCALAR"
+		},
+		{
+			"bufferView":8,
+			"componentType":5126,
+			"count":40743,
+			"max":[
+				0.8864824771881104,
+				3.4822821617126465,
+				0.998790979385376
+			],
+			"min":[
+				-0.9203543066978455,
+				-0.018046392127871513,
+				-0.9945610165596008
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":9,
+			"componentType":5126,
+			"count":40743,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":10,
+			"componentType":5126,
+			"count":40743,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":11,
+			"componentType":5123,
+			"count":62742,
+			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
@@ -133,6 +309,54 @@
 			"byteLength":117612,
 			"byteOffset":320000,
 			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":60216,
+			"byteOffset":437612,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":60216,
+			"byteOffset":497828,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":40144,
+			"byteOffset":558044,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":58296,
+			"byteOffset":598188,
+			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":488916,
+			"byteOffset":656484,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":488916,
+			"byteOffset":1145400,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":325944,
+			"byteOffset":1634316,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":125484,
+			"byteOffset":1960260,
+			"target":34963
 		}
 	],
 	"samplers":[
@@ -143,7 +367,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":437612,
+			"byteLength":2085744,
 			"uri":"terrain_test2.bin"
 		}
 	]

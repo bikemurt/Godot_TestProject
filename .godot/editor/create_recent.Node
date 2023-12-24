@@ -1,8 +1,9 @@
+MultiMeshScatter
+MeshInstance3D
 RigidBody3D
 SpringArm3D
 CollisionShape3D
 StaticBody3D
-MeshInstance3D
 MultiMeshInstance3D
 WorldEnvironment
 SpotLight3D
