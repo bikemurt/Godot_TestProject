@@ -22,10 +22,14 @@ from bpy.props import (
         )
 
 class GodotPipelineProperties(PropertyGroup):
-    collision_margin : FloatProperty(
-        name = 'Collision Margin',
-        default = 1.03
-    )
+    ## UI
+    collision_UI : bpy.props.BoolProperty(name = "Collisions", default=False)
+    path_UI : bpy.props.BoolProperty(name = "Set Scripts, Materials, etc.", default = False)
+    multimesh_UI : bpy.props.BoolProperty(name = "Multimesh", default = False)
+    multimesh_UI_dynamic_inst : bpy.props.BoolProperty(name = "Dynamic Instancing", default = False)
+    
+    ## COLLISION
+    collision_margin : FloatProperty(name = 'Collision Margin', default = 1.03)
     col_types : EnumProperty(
         name =  "Collision",
         items = (
@@ -39,22 +43,13 @@ class GodotPipelineProperties(PropertyGroup):
         ),
         default = "BOX"
     )
-    rigid : BoolProperty(
-        name = "Rigid Body",
-        default = False
-    )
-    set_path : StringProperty(
-        name = "Set Path",
-        default = ""
-    )
-    mesh_data : BoolProperty(
-        name = "Apply to Mesh",
-        default = False
-    )
-    col_only: BoolProperty(
-        name = "Collision Only",
-        default = False
-    )
+    rigid : BoolProperty(name = "Rigid Body", default = False)
+    mesh_data : BoolProperty(name = "Apply to Mesh", default = False)
+    col_only: BoolProperty(name = "Collision Only", default = False)
+    display_wire: BoolProperty(name = "Display Wireframe", default = False)
+    
+    ## SET PATHS
+    set_path : StringProperty(name = "Set Path", default = "")
     path_options : EnumProperty(
         name =  "Path Type",
         items = (
@@ -66,10 +61,12 @@ class GodotPipelineProperties(PropertyGroup):
         ),
         default = "script"
     )
-    display_wire: BoolProperty(
-        name = "Display Wireframe",
-        default = False
-    )
+    prop_path : StringProperty(name = "Prop File", default = "")
+    
+    ## Multimesh
+    occlusion_culling : BoolProperty(name = "Occlusion Culling", default = False)
+    camera_node_path : StringProperty(name = "Camera Node", default = "")
+    dynamic_script : StringProperty(name = "Script", default = "")
 
 class GodotPipelinePanel(bpy.types.Panel):
     bl_idname = "OBJECT_PT_godot_pipeline"
@@ -83,9 +80,9 @@ class GodotPipelinePanel(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
         props = scene.GodotPipelineProps
+        obj = context.object
         
         ###
-        
         box = layout.box()
         
         row = box.row()
@@ -93,61 +90,106 @@ class GodotPipelinePanel(bpy.types.Panel):
         
         row = box.row()
         row.prop(props, "mesh_data")
+        
+        row = box.row()
+        row.operator("object.clear_all_customs", icon='NONE', text="Clear Custom Data")
             
         ###
         
         box = layout.box()
         
         row = box.row()
-        row.label(text="Type:")
         
-        row = box.row()
-        row.prop(props, "col_types")
+        row.prop(props, "collision_UI",
+            icon="TRIA_DOWN" if props.collision_UI else "TRIA_RIGHT",
+            icon_only=False, emboss=False
+        )
         
-        row = box.row()
-        row.operator("object.select_collisions", icon='NONE', text="Select Collisions")
-        
-        row = box.row()
-        row.prop(props, "rigid")
-        
-        row = box.row()
-        row.prop(props, "col_only")
-        
-        row = box.row()
-        row.prop(props, "display_wire")
-        
-        row = box.row()
-        row.operator("object.set_collisions", icon='NONE', text="Set Collisions")
-        
-        row = box.row()
-        row.operator("object.reset_origin_bb", icon='NONE', text="Set Origins to Bounding Box")
-        
-        box.separator()
-        
-        row = box.row()
-        row.prop(props, "collision_margin")
-        
-        row = box.row()
-        row.operator("object.set_collision_size", icon='NONE', text="Set Collision Sizes")
-        
-        box = layout.box()
-        
-        row = box.row()
-        row.prop(props, "set_path")
-        
-        row = box.row()
-        row.prop(props, "path_options")
-        
-        row = box.row()
-        row.operator("object.set_path", icon='NONE', text="Set Path")
+        if props.collision_UI:
+            row = box.row()
+            
+            row = box.row()
+            row.prop(props, "col_types")
+            
+            row = box.row()
+            row.operator("object.select_collisions", icon='NONE', text="Select Collisions")
+            
+            row = box.row()
+            row.prop(props, "rigid")
+            
+            row = box.row()
+            row.prop(props, "col_only")
+            
+            row = box.row()
+            row.prop(props, "display_wire")
+            
+            row = box.row()
+            row.operator("object.set_collisions", icon='NONE', text="Set Collisions")
+            
+            row = box.row()
+            row.operator("object.reset_origin_bb", icon='NONE', text="Set Origins to Bounding Box")
+            
+            box.separator()
+            
+            row = box.row()
+            row.prop(props, "collision_margin")
+            
+            row = box.row()
+            row.operator("object.set_collision_size", icon='NONE', text="Set Collision Sizes")
         
         box = layout.box()
         
         row = box.row()
-        row.prop_search(context.scene, "target", context.scene, "objects", text="Mesh")
+        row.prop(props, "path_UI",
+            icon="TRIA_DOWN" if props.path_UI else "TRIA_RIGHT",
+            icon_only=False, emboss=False
+        )
+        
+        if props.path_UI:
+            row = box.row()
+            row.prop(props, "set_path")
+            
+            row = box.row()
+            row.prop(props, "path_options")
+            
+            row = box.row()
+            row.operator("object.set_path", icon='NONE', text="Set Path")
+            
+            row = box.row()
+            row.prop(props, "prop_path")
+            
+            row = box.row()
+            row.operator("object.set_script_properties", icon='NONE', text="Set Script Properties")
+        
+        box = layout.box()
         
         row = box.row()
-        row.operator("object.set_multimesh", icon='NONE', text="Set Multimesh")
+        row.prop(props, "multimesh_UI",
+            icon="TRIA_DOWN" if props.multimesh_UI else "TRIA_RIGHT",
+            icon_only=False, emboss=False
+        )
+        
+        if props.multimesh_UI:
+            row = box.row()
+            row.prop_search(context.scene, "target", context.scene, "objects", text="Mesh")
+
+            row = box.row()
+            row.prop(props, "occlusion_culling")
+            
+            row = box.row()
+            row.prop(props, "multimesh_UI_dynamic_inst")
+            
+            if props.multimesh_UI_dynamic_inst:
+                row = box.split(factor=0.4)
+                row.label(text='Camera Node:')
+                row.prop(props, "camera_node_path", text='')
+            
+            if props.multimesh_UI_dynamic_inst:
+                row = box.row()
+                row.prop(props, "dynamic_script")
+            
+            row = box.row()
+            row.operator("object.set_multimesh", icon='NONE', text="Set Multimesh")
         
         ###
         
@@ -306,6 +348,22 @@ class SetPath(bpy.types.Operator):
         
         return {'FINISHED'}
 
+class SetScriptProperties(bpy.types.Operator):
+    """Set Script Properties"""
+    bl_idname = "object.set_script_properties"
+    bl_label = "Set Script Properties"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        props = scene.GodotPipelineProps
+        
+        for obj in context.selected_objects:
+            if props.mesh_data: obj = obj.data
+            obj["prop_file"] = props.prop_path
+        
+        return {'FINISHED'}
+
 class SetMultimesh(bpy.types.Operator):
     """Set Multimesh"""
     bl_idname = "object.set_multimesh"
@@ -315,20 +373,46 @@ class SetMultimesh(bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         props = scene.GodotPipelineProps
-        
-        margin = props.collision_margin
+
+        # this is not necessarily a good idea since script "prop file" could be set
+        #bpy.ops.object.clear_all_customs()
+
         for obj in context.selected_objects:
             obj.display_type = "BOUNDS"
             bpy.ops.object.reset_origin_bb()
-            obj["size_x"] = str(round(margin * obj.dimensions[0] / obj.scale[0], 4))
-            obj["size_z"] = str(round(margin * obj.dimensions[1] / obj.scale[1], 4))
-            obj["size_y"] = str(round(margin * obj.dimensions[2] / obj.scale[2], 4))
+            obj["size_x"] = str(round(obj.dimensions[0] / obj.scale[0], 4))
+            obj["size_z"] = str(round(obj.dimensions[1] / obj.scale[1], 4))
+            obj["size_y"] = str(round(obj.dimensions[2] / obj.scale[2], 4))
             obj["multimesh_target"] = scene.target.name
+            obj.data.materials.clear()
+            
+            if props.occlusion_culling:
+                obj["occlusion_culling"] = "true"
+            
+            if props.camera_node_path != "":
+                obj["camera_node"] = props.camera_node_path
+                obj["dynamic_script"] = props.dynamic_script
+
+        return {'FINISHED'}
+
+class ClearAllCustoms(bpy.types.Operator):
+    """Clear All Customs"""
+    bl_idname = "object.clear_all_customs"
+    bl_label = "Clear All Customs"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        props = scene.GodotPipelineProps
+        
+        for obj in context.selected_objects:
+            if props.mesh_data: obj = obj.data
+            obj.id_properties_clear()
         
         return {'FINISHED'}
 
 classes = [GodotPipelineProperties, GodotPipelinePanel, SelectCollisions,\
-    SetCollisions, SetCollisionSize, ResetOriginBB, SetPath, SetMultimesh]
+    SetCollisions, SetCollisionSize, ResetOriginBB, SetPath, SetMultimesh, ClearAllCustoms, SetScriptProperties]
 
 def register():
     for cls in classes:

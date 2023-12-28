@@ -19,6 +19,7 @@ func _ready():
 			staticbody_cleanup()
 			rigidbody_cleanup()
 			
+			# ensure that SceneInit only runs once
 			set_meta("run", false)
 
 func reparent_pass():
@@ -104,6 +105,20 @@ func set_shape(col, shape):
 	col[0].add_child(col[1])
 	col[1].set_owner(get_tree().edited_scene_root)
 
+func set_script_params(node, script_filepath):
+	var script_file = FileAccess.open(script_filepath, FileAccess.READ)
+	
+	while not script_file.eof_reached():
+		var line = script_file.get_line()
+		var components = line.split('=')
+		if len(components) > 1:
+			var param_name = components[0]
+			var expression = components[1]
+			
+			var e = Expression.new()
+			e.parse(expression)
+			node.set(param_name, e.execute())
+
 func iterate_scene(node):
 	
 	if node is MeshInstance3D:		
@@ -128,17 +143,22 @@ func iterate_scene(node):
 				node.set_script(load(meta_val))
 			
 			if meta == "multimesh_target":
+				
 				var scatter = MultiMeshInstance3D.new()
-				scatter.name = "MultiMeshScatter"
 				node.get_parent().add_child(scatter)
+				
+				scatter.name = "MultiMeshScatter"
 				scatter.set_script(load("res://addons/multimesh_scatter/multimesh_scatter.gd"))			
 				
-				var placement = Vector3(0,0,0)
-				placement.x = float(node.get_meta("size_x"))
-				placement.y = float(node.get_meta("size_y"))
-				placement.z = float(node.get_meta("size_z"))
-				scatter.set("placement_size", placement)
+				var scatter_size = Vector3(0,0,0)
+				scatter_size.x = float(node.get_meta("size_x"))
+				scatter_size.y = float(node.get_meta("size_y"))
+				scatter_size.z = float(node.get_meta("size_z"))
+				scatter.set("scatter_size", scatter_size)
 				scatter.transform = node.transform
+				
+				if "prop_file" in node.get_meta_list():
+					set_script_params(scatter, node.get_meta("prop_file"))
 				
 				var target : MeshInstance3D = get_node(meta_val)
 				
@@ -146,7 +166,42 @@ func iterate_scene(node):
 				scatter.multimesh.mesh = target.mesh
 				
 				scatter.set_owner(get_tree().edited_scene_root)
+				##
 				
+				# occlusion culling flickers... more investigation needed
+				if "occlusion_culling" in node.get_meta_list():
+					var occlusion = OccluderInstance3D.new()
+					node.get_parent().add_child(occlusion)
+					
+					occlusion.name = "OccluderInstance3D"
+					occlusion.transform = node.transform
+					
+					var box_occluder = BoxOccluder3D.new()
+					box_occluder.size = scatter_size
+					occlusion.occluder = box_occluder
+					
+					occlusion.set_owner(get_tree().edited_scene_root)
+				##
+				
+				if "camera_node" in node.get_meta_list():
+					var dyn_node = Node.new()
+					node.get_parent().add_child(dyn_node)
+					
+					dyn_node.name = "DynamicInstancingNode"
+					dyn_node.set_script(load(node.get_meta("dynamic_script")))
+					
+					dyn_node.set("target_path", node.get_meta("camera_node"))
+					dyn_node.set("multimesh_path", "../" + scatter.name)
+					
+					var plane_size = Vector2(scatter_size.x, scatter_size.z).length()
+					
+					dyn_node.set("distance_fade_start", plane_size)
+					dyn_node.set("distance_fade_end", plane_size * 2)
+					
+					dyn_node.set_owner(get_tree().edited_scene_root)
+				##
+				
+				target.hide()
 				delete_nodes.append(node)
 			
 			if meta == "collision":
@@ -221,35 +276,7 @@ func iterate_scene(node):
 				
 			if meta == "state":
 				if meta_val == "hide":
-					node.hide()
-					
-			if meta == "multimesh":
-				var full_path = node.get_parent().get_name() + "/" + meta_val
-				
-				var source_node = node
-				
-				var target_node = node.get_parent().get_node(meta_val)
-				
-				var mm : MultiMesh = MultiMesh.new()
-				
-				mm.transform_format = MultiMesh.TRANSFORM_3D
-				mm.instance_count = 128
-				mm.visible_instance_count = -1
-				
-				mm.mesh = node.mesh
-				
-				for i in range(mm.instance_count):
-					var position = Transform3D()
-					position = position.translated(Vector3(randf() * 100 - 50, randf() * 50 - 25, randf() * 50 - 25))
-					
-					mm.set_instance_transform(i, position)
-				
-				var mm_inst : MultiMeshInstance3D = MultiMeshInstance3D.new()
-				mm_inst.multimesh = mm
-				
-				node.get_parent().add_child(mm_inst)
-				mm_inst.set_owner(get_tree().edited_scene_root)
-				
+					node.hide()	
 				
 	for child in node.get_children():
 		iterate_scene(child)

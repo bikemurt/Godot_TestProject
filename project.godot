@@ -15,14 +15,6 @@ run/main_scene="res://Levels/TerrainTest/TerrainTest.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
 
-[display]
-
-window/size/mode=3
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/multimesh_scatter/plugin.cfg")
-
 [input]
 
 forward={
@@ -67,5 +59,8 @@ test={
 
 [rendering]
 
+occlusion_culling/bvh_build_quality=0
+occlusion_culling/occlusion_rays_per_thread=256
 anti_aliasing/quality/screen_space_aa=1
 anti_aliasing/quality/use_taa=true
+occlusion_culling/use_occlusion_culling=true

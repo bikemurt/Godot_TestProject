@@ -1,4 +1,5 @@
-MultiMeshScatter
+Node
+OccluderInstance3D
 MeshInstance3D
 RigidBody3D
 SpringArm3D
