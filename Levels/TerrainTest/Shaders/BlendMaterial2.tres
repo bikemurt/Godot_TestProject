@@ -3,7 +3,7 @@
 [ext_resource type="Shader" path="res://Levels/TerrainTest/Shaders/BlendTextures.gdshader" id="1_c0s1y"]
 [ext_resource type="Texture2D" path="res://Levels/TerrainTest/Textures/grass/albedo-rough.dds" id="2_u56e2"]
 [ext_resource type="Texture2D" path="res://Levels/TerrainTest/Textures/rock/albedo-roughness.dds" id="3_ysy8i"]
-[ext_resource type="Texture2D" uid="uid://chm81dacqo44l" path="res://Levels/TerrainTest/Import2/BlendMap.png" id="4_2dfox"]
+[ext_resource type="Texture2D" uid="uid://cd187dh54l6h8" path="res://Levels/TerrainTest/Import2/BlendMap.png" id="4_2dfox"]
 [ext_resource type="Texture2D" uid="uid://wnbvaoca3qrl" path="res://Levels/TerrainTest/Textures/grass/Ground037_4K-JPG_NormalGL.jpg" id="5_d03q5"]
 [ext_resource type="Texture2D" uid="uid://cuvj75vd5j7rq" path="res://Levels/TerrainTest/Textures/rock/Rock030_4K-JPG_NormalGL.jpg" id="6_ik85i"]
 

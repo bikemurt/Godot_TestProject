@@ -14,12 +14,12 @@
 					"set_path":"res://addons/multimesh_scatter/multimesh_scatter.gd",
 					"display_wire":1,
 					"collision_margin":1.0,
-					"collision_UI":0,
+					"collision_UI":1,
 					"path_UI":1,
 					"multimesh_UI":1,
 					"mm_random_rotation":5.0,
 					"mesh_data":0,
-					"prop_path":"res://Levels/TerrainTest/Import2/mm_params.txt",
+					"prop_path":"res://Levels/TerrainTest/Import2/mm_tree_params.txt",
 					"occlusion_culling":0,
 					"multimesh_UI_dynamic_inst":1,
 					"camera_node_path":"../../player2",
@@ -30,7 +30,7 @@
 					"Target_Armature":{}
 				},
 				"target":{
-					"name":"Tree",
+					"name":"Grass",
 					"type":"Object"
 				}
 			},
@@ -39,7 +39,9 @@
 				0,
 				1,
 				2,
-				3
+				3,
+				4,
+				5
 			]
 		}
 	],
@@ -54,21 +56,17 @@
 			"name":"Terrain"
 		},
 		{
-			"mesh":1,
-			"name":"Tree"
-		},
-		{
 			"extras":{
 				"size_x":"97.8414",
 				"size_z":"111.6336",
 				"size_y":"22.2703",
 				"multimesh_target":"Tree",
-				"prop_file":"res://Levels/TerrainTest/Import2/mm_params.txt",
+				"prop_file":"res://Levels/TerrainTest/Import2/mm_tree_params.txt",
 				"camera_node":"../../player2",
 				"dynamic_script":"res://Levels/TerrainTest/Scripts/mm_visibility.gd"
 			},
-			"mesh":2,
-			"name":"Terrain.001",
+			"mesh":1,
+			"name":"Trees1",
 			"translation":[
 				-101.24730682373047,
 				-2.5815353393554688,
@@ -81,16 +79,47 @@
 				"size_z":"111.5592",
 				"size_y":"15.9936",
 				"multimesh_target":"Tree",
-				"prop_file":"res://Levels/TerrainTest/Import2/mm_params.txt",
+				"prop_file":"res://Levels/TerrainTest/Import2/mm_tree_params.txt",
 				"camera_node":"../../player2",
 				"dynamic_script":"res://Levels/TerrainTest/Scripts/mm_visibility.gd"
 			},
-			"mesh":3,
-			"name":"Terrain.002",
+			"mesh":2,
+			"name":"Trees2",
 			"translation":[
 				0.10968732833862305,
 				-3.53670334815979,
 				-14.554380416870117
+			]
+		},
+		{
+			"extras":{
+				"size_x":"106.9076",
+				"size_z":"111.5592",
+				"size_y":"15.9936",
+				"multimesh_target":"Grass",
+				"prop_file":"res://Levels/TerrainTest/Import2/mm_grass_params.txt",
+				"camera_node":"../../player2",
+				"dynamic_script":"res://Levels/TerrainTest/Scripts/mm_visibility.gd"
+			},
+			"mesh":3,
+			"name":"Grass1",
+			"translation":[
+				0.10968732833862305,
+				-3.53670334815979,
+				-14.554380416870117
+			]
+		},
+		{
+			"mesh":4,
+			"name":"Tree"
+		},
+		{
+			"mesh":5,
+			"name":"Grass",
+			"translation":[
+				-0.0017299652099609375,
+				0.2317361831665039,
+				2.288818359375e-05
 			]
 		}
 	],
@@ -129,6 +158,20 @@
 				},
 				"metallicFactor":0
 			}
+		},
+		{
+			"doubleSided":true,
+			"name":"Grass",
+			"pbrMetallicRoughness":{
+				"baseColorFactor":[
+					0.0896579846739769,
+					0.22658415138721466,
+					0.013961032964289188,
+					1
+				],
+				"metallicFactor":0,
+				"roughnessFactor":0.5
+			}
 		}
 	],
 	"meshes":[
@@ -137,26 +180,13 @@
 			"primitives":[
 				{
 					"attributes":{
-						"POSITION":0,
-						"NORMAL":1,
-						"TEXCOORD_0":2
+						"COLOR_0":0,
+						"POSITION":1,
+						"NORMAL":2,
+						"TEXCOORD_0":3
 					},
-					"indices":3,
+					"indices":4,
 					"material":0
-				}
-			]
-		},
-		{
-			"name":"Tree",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":4,
-						"NORMAL":5,
-						"TEXCOORD_0":6
-					},
-					"indices":7,
-					"material":1
 				}
 			]
 		},
@@ -165,11 +195,11 @@
 			"primitives":[
 				{
 					"attributes":{
-						"POSITION":8,
-						"NORMAL":9,
-						"TEXCOORD_0":10
+						"POSITION":5,
+						"NORMAL":6,
+						"TEXCOORD_0":7
 					},
-					"indices":11
+					"indices":8
 				}
 			]
 		},
@@ -178,11 +208,52 @@
 			"primitives":[
 				{
 					"attributes":{
-						"POSITION":12,
-						"NORMAL":13,
-						"TEXCOORD_0":14
+						"POSITION":9,
+						"NORMAL":10,
+						"TEXCOORD_0":11
 					},
-					"indices":15
+					"indices":12
+				}
+			]
+		},
+		{
+			"name":"Terrain.001",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":13,
+						"NORMAL":14,
+						"TEXCOORD_0":15
+					},
+					"indices":12
+				}
+			]
+		},
+		{
+			"name":"Tree",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":16,
+						"NORMAL":17,
+						"TEXCOORD_0":18
+					},
+					"indices":19,
+					"material":1
+				}
+			]
+		},
+		{
+			"name":"Grass",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":20,
+						"NORMAL":21,
+						"TEXCOORD_0":22
+					},
+					"indices":23,
+					"material":2
 				}
 			]
 		}
@@ -221,6 +292,13 @@
 	"accessors":[
 		{
 			"bufferView":0,
+			"componentType":5123,
+			"count":10000,
+			"normalized":true,
+			"type":"VEC4"
+		},
+		{
+			"bufferView":1,
 			"componentType":5126,
 			"count":10000,
 			"max":[
@@ -236,59 +314,25 @@
 			"type":"VEC3"
 		},
 		{
-			"bufferView":1,
+			"bufferView":2,
 			"componentType":5126,
 			"count":10000,
 			"type":"VEC3"
 		},
 		{
-			"bufferView":2,
+			"bufferView":3,
 			"componentType":5126,
 			"count":10000,
 			"type":"VEC2"
 		},
 		{
-			"bufferView":3,
+			"bufferView":4,
 			"componentType":5123,
 			"count":58806,
 			"type":"SCALAR"
 		},
 		{
-			"bufferView":4,
-			"componentType":5126,
-			"count":20973,
-			"max":[
-				0.8722996115684509,
-				3.4627370834350586,
-				0.998790979385376
-			],
-			"min":[
-				-0.9203543066978455,
-				-0.018046392127871513,
-				-0.8897016644477844
-			],
-			"type":"VEC3"
-		},
-		{
 			"bufferView":5,
-			"componentType":5126,
-			"count":20973,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":6,
-			"componentType":5126,
-			"count":20973,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":7,
-			"componentType":5123,
-			"count":21435,
-			"type":"SCALAR"
-		},
-		{
-			"bufferView":8,
 			"componentType":5126,
 			"count":1224,
 			"max":[
@@ -304,25 +348,25 @@
 			"type":"VEC3"
 		},
 		{
-			"bufferView":9,
+			"bufferView":6,
 			"componentType":5126,
 			"count":1224,
 			"type":"VEC3"
 		},
 		{
-			"bufferView":10,
+			"bufferView":7,
 			"componentType":5126,
 			"count":1224,
 			"type":"VEC2"
 		},
 		{
-			"bufferView":11,
+			"bufferView":8,
 			"componentType":5123,
 			"count":6918,
 			"type":"SCALAR"
 		},
 		{
-			"bufferView":12,
+			"bufferView":9,
 			"componentType":5126,
 			"count":1282,
 			"max":[
@@ -338,119 +382,263 @@
 			"type":"VEC3"
 		},
 		{
+			"bufferView":10,
+			"componentType":5126,
+			"count":1282,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":11,
+			"componentType":5126,
+			"count":1282,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":12,
+			"componentType":5123,
+			"count":7254,
+			"type":"SCALAR"
+		},
+		{
 			"bufferView":13,
 			"componentType":5126,
 			"count":1282,
+			"max":[
+				53.45380401611328,
+				7.996796607971191,
+				55.77959442138672
+			],
+			"min":[
+				-53.45380401611328,
+				-7.996796607971191,
+				-55.77959442138672
+			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":14,
 			"componentType":5126,
 			"count":1282,
-			"type":"VEC2"
+			"type":"VEC3"
 		},
 		{
 			"bufferView":15,
+			"componentType":5126,
+			"count":1282,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":16,
+			"componentType":5126,
+			"count":20973,
+			"max":[
+				0.8722996115684509,
+				3.4627370834350586,
+				0.998790979385376
+			],
+			"min":[
+				-0.9203543066978455,
+				-0.018046392127871513,
+				-0.8897016644477844
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":17,
+			"componentType":5126,
+			"count":20973,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":18,
+			"componentType":5126,
+			"count":20973,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":19,
 			"componentType":5123,
-			"count":7254,
+			"count":21435,
+			"type":"SCALAR"
+		},
+		{
+			"bufferView":20,
+			"componentType":5126,
+			"count":12427,
+			"max":[
+				1.091318130493164,
+				0.24528121948242188,
+				1.1248664855957031
+			],
+			"min":[
+				-1.0968074798583984,
+				-0.24528121948242188,
+				-1.1032028198242188
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":21,
+			"componentType":5126,
+			"count":12427,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":22,
+			"componentType":5126,
+			"count":12427,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":23,
+			"componentType":5123,
+			"count":23247,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":120000,
+			"byteLength":80000,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":120000,
-			"byteOffset":120000,
+			"byteOffset":80000,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":120000,
+			"byteOffset":200000,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":80000,
-			"byteOffset":240000,
+			"byteOffset":320000,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":117612,
-			"byteOffset":320000,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":251676,
-			"byteOffset":437612,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":251676,
-			"byteOffset":689288,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":167784,
-			"byteOffset":940964,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":42870,
-			"byteOffset":1108748,
+			"byteOffset":400000,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":14688,
-			"byteOffset":1151620,
+			"byteOffset":517612,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":14688,
-			"byteOffset":1166308,
+			"byteOffset":532300,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":9792,
-			"byteOffset":1180996,
+			"byteOffset":546988,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":13836,
-			"byteOffset":1190788,
+			"byteOffset":556780,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":15384,
-			"byteOffset":1204624,
+			"byteOffset":570616,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":15384,
-			"byteOffset":1220008,
+			"byteOffset":586000,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":10256,
-			"byteOffset":1235392,
+			"byteOffset":601384,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":14508,
-			"byteOffset":1245648,
+			"byteOffset":611640,
+			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":15384,
+			"byteOffset":626148,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":15384,
+			"byteOffset":641532,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":10256,
+			"byteOffset":656916,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":251676,
+			"byteOffset":667172,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":251676,
+			"byteOffset":918848,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":167784,
+			"byteOffset":1170524,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":42870,
+			"byteOffset":1338308,
+			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":149124,
+			"byteOffset":1381180,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":149124,
+			"byteOffset":1530304,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":99416,
+			"byteOffset":1679428,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":46494,
+			"byteOffset":1778844,
 			"target":34963
 		}
 	],
@@ -462,7 +650,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":1260156,
+			"byteLength":1825340,
 			"uri":"terrain_test2.bin"
 		}
 	]

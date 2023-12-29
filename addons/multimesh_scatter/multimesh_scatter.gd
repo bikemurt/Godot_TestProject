@@ -31,6 +31,13 @@ enum ScatterType { BOX, SPHERE }
 	set(value):
 		count = value
 		_update()
+		
+## The number of generated instances.
+@export var generated_count := 100:
+	get: return generated_count
+	set(value):
+		generated_count = value
+		# display only - do NOT update here (recursion)
 
 ## Defines the placement type.
 @export_enum("Box", "Sphere") var scatter_type: int = ScatterType.BOX:
@@ -204,8 +211,8 @@ enum ScatterType { BOX, SPHERE }
 	get: return use_vertex_colors
 	set(value):
 		use_vertex_colors = value
-		if value:
-			print("[MultiMeshScatter]: Enabling vertex color checks, from now on you will need to manually update the scattering in Advanced Settings > Debug > Manual Update.")
+		#if value:
+		#	print("[MultiMeshScatter]: Enabling vertex color checks, from now on you will need to manually update the scattering in Advanced Settings > Debug > Manual Update.")
 		_update()
 
 ## Scatter threshold for the red channel.
@@ -300,16 +307,11 @@ var _chunk_container: Node3D
 		else:
 			_delete_debug_area()
 
-@export var manual_update := false:
-	get: return manual_update
-	set(value):
-		_update(true)
-		manual_update = false
-
 var _debug_draw_instance: MeshInstance3D
 var _rng := RandomNumberGenerator.new()
 var _mesh_data_array := {}
 var _last_pos: Vector3
+var _is_updating := false
 
 @onready var _space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
 
@@ -325,14 +327,15 @@ func _ready() -> void:
 	else:
 		set_notify_transform(false)
 		set_ignore_transform_notification(true)
-
+	
 	_update()
 
 func _notification(what: int) -> void:
 	if !is_inside_tree(): return
 
-	if NOTIFICATION_TRANSFORM_CHANGED:
-		_update()
+	match what:
+		NOTIFICATION_TRANSFORM_CHANGED:
+			_update()
 
 func _ensure_has_mm() -> bool:
 	if multimesh == null:
@@ -380,16 +383,24 @@ func _update_debug_area_size() -> void:
 			ScatterType.BOX, _:
 				_debug_draw_instance.mesh.size = scatter_size
 
-func _update(force := false) -> void:
+func _update() -> void:
 	if !_space: return
-	scatter(force)
-
+	
+	if not _is_updating:
+		_is_updating = true
+		
+		await get_tree().create_timer(1.0).timeout
+		
+		# debug
+		#print("scattering " + name)
+		scatter()
+		
+		_is_updating = false
+	
 	if Engine.is_editor_hint():
 		_update_debug_area_size()
 
-func scatter(force := false) -> void:
-	if use_vertex_colors and not force:
-		return
+func scatter() -> void:
 
 	if not _ensure_has_mm():
 		printerr("[MultiMeshScatter]: The MultiMeshInstance3D doesn't have an assigned mesh.")
@@ -399,8 +410,8 @@ func scatter(force := false) -> void:
 	_rng.seed = seed
 
 	multimesh.instance_count = 0
-	multimesh.instance_count = count
 
+	var transforms = []
 	for i in range(count):
 		var offset := Vector3.ZERO
 
@@ -441,12 +452,12 @@ func scatter(force := false) -> void:
 		var terrain_normal = hit.normal
 		if not custom_normal.is_zero_approx():
 			hit.normal = custom_normal.normalized()
-		
-		# Angle constraints check - use original hit angle
+
+		# Angle constraints check
 		if use_angle:
 			var off: float = rad_to_deg((abs(terrain_normal.x) + abs(terrain_normal.z)) / 2.0)
 			if not off < angle_degrees:
-				iteration_scale = Vector3.ZERO
+				continue
 
 		# Vertex color placement
 		if iteration_scale > Vector3.ZERO and use_vertex_colors:
@@ -459,7 +470,7 @@ func scatter(force := false) -> void:
 					_mesh_data_array[mesh_id] = mdt
 				var color: Color = _mesh_data_array[mesh_id].get_vertex_color(_get_closest_vertex(_mesh_data_array[mesh_id], mesh.global_transform.origin, hit.position))
 				if not (color.r <= r_channel && color.g <= g_channel && color.b <= b_channel):
-					iteration_scale = Vector3.ZERO
+					continue
 			else:
 				printerr("[MultiMeshScatter]: Cannot find mesh for the vertex color check. Make sure '", hit.collider.name, "' has a MeshInstance3D as a parent.")
 
@@ -470,25 +481,31 @@ func scatter(force := false) -> void:
 				global_transform.basis.x.cross(hit.normal),
 			).orthonormalized()
 		)
-		
-		var scale_x = _rng.randf_range(min_random_size.x, max_random_size.x)
-		var scale_y = _rng.randf_range(min_random_size.y, max_random_size.y)
-		var scale_z = _rng.randf_range(min_random_size.z, max_random_size.z)
-		
-		# change y and z scaling based on the x scaling, weighted by the scale uniformity factor
-		scale_y = scale_uniformity * scale_x + (1 - scale_uniformity) * scale_y
-		scale_z = scale_uniformity * scale_x + (1 - scale_uniformity) * scale_z
-		
+
+		var scale_x := _rng.randf_range(min_random_size.x, max_random_size.x)
+		var scale_y := _rng.randf_range(min_random_size.y, max_random_size.y)
+		var scale_z := _rng.randf_range(min_random_size.z, max_random_size.z)
+
+		# Change y and z scaling based on the x scaling, weighted by the scale uniformity factor
+		scale_y = scale_uniformity * scale_x + (1.0 - scale_uniformity) * scale_y
+		scale_z = scale_uniformity * scale_x + (1.0 - scale_uniformity) * scale_z
+
 		t = t\
 			.rotated(Vector3.RIGHT, deg_to_rad(_rng.randf_range(-random_rotation.x, random_rotation.x) + offset_rotation.x))\
 			.rotated(Vector3.UP, deg_to_rad(_rng.randf_range(-random_rotation.y, random_rotation.y) + offset_rotation.y))\
 			.rotated(Vector3.FORWARD, deg_to_rad(_rng.randf_range(-random_rotation.z, random_rotation.z) + offset_rotation.z))\
-			.scaled(iteration_scale * Vector3(
-				scale_x,
-				scale_y,
-				scale_z))
+			.scaled(iteration_scale * Vector3(scale_x, scale_y, scale_z))
 		t.origin = hit.position - global_position + offset_position
+		
+		transforms.append(t)
+	
+	multimesh.instance_count = len(transforms)
+	var i := 0
+	for t in transforms:
 		multimesh.set_instance_transform(i, t)
+		i += 1
+	
+	generated_count = multimesh.instance_count
 
 func _get_closest_vertex(mdt: MeshDataTool, mesh_pos: Vector3, hit_pos: Vector3) -> int:
 	var closest_dist := INF

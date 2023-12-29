@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://bkbcpfac5wbnj"]
+
+[ext_resource type="Script" path="res://addons/vertex_painter/get_editor_camera.gd" id="1_6dus2"]
+[ext_resource type="Script" path="res://addons/vertex_painter/Node3D.gd" id="2_aplt7"]
+
+[node name="vertex_painter" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_6dus2")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_right = 145.0
+offset_bottom = 36.0
+text = "Click me"
+
+[node name="Node3D" type="Node3D" parent="."]
+script = ExtResource("2_aplt7")
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

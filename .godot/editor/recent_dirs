@@ -1,9 +1,10 @@
 res://Levels/TerrainTest/Scripts
+res://addons/vertex_painter
+res://Scripts
+res://Levels/TerrainTest/Shaders
 res://Levels/TerrainTest/Occluders
 C:/Godot/Projects/TestProject/Levels/TerrainTest/Import2
 res://addons/multimesh_scatter
-res://Scripts
-res://Levels/TerrainTest/Shaders
 res://Modules/RigidBody_PI
 res://Levels/Andarin/Import
 res://MultiAssets/Grass01

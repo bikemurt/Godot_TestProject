@@ -1,0 +1,10 @@
+count=300
+custom_normal=Vector3(0,0,0)
+scale_uniformity=0.5
+min_random_size=Vector3(2,2,2)
+max_random_size=Vector3(4,5,4)
+random_rotation=Vector3(5,5,5)
+clustering_amount=0
+use_angle=false
+show_debug_area=false
+offset_position=Vector3(0,0.5,0)
