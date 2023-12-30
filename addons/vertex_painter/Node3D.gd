@@ -23,8 +23,8 @@ func lock(node, state):
 			child.set_meta("_edit_lock_", state)
 			#child.set_owner(get_tree().get_edited_scene_root())
 		
-		print(child)
-		print(child.get_meta("_edit_lock_"))
+		#print(child)
+		#print(child.get_meta("_edit_lock_"))
 		lock(child, state)
 
 var m : MeshInstance3D = null

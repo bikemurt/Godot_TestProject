@@ -164,6 +164,8 @@ func update_colors(mdt, idxs, mesh_i: MeshInstance3D):
 	mesh_i.mesh.clear_surfaces()
 	mdt.commit_to_surface(mesh_i.mesh)
 	
+	get_tree().call_group("test", "_update")
+	
 	var mi_id = mesh_i.get_instance_id()
 	get_tree().call_group("test", "_update_mesh_data", mi_id, mdt)
 
