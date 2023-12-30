@@ -5,3 +5,9 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_qnhvi")
+shader_parameter/SpecularFac = null
+shader_parameter/MixSpecular = null
+shader_parameter/SpecBlendOffset = null
+shader_parameter/SpecBlendScale = null
+shader_parameter/UVFactor1 = 1.0
+shader_parameter/UVFactor2 = 1.0

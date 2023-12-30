@@ -2,8 +2,11 @@ res://Levels/TerrainTest/TerrainTest.tscn
 res://Levels/TerrainTest/Shaders/BlendMaterial2.tres
 res://Shaders/BlendTextures.gdshader
 res://Levels/TerrainTest/Shaders/grass.gdshader
-res://Levels/TerrainTest/Scripts/InputEvent.gd
+res://addons/vertex_painter/shaders/vertex_color.gdshader
 res://addons/vertex_painter/vertex_painter.tscn
-res://addons/vertex_painter/vertex_painter.gd
 res://addons/vertex_painter/get_editor_camera.gd
 res://addons/vertex_painter/Node3D.gd
+res://Materials/Terrain.tres
+res://Materials/Wall1.tres
+res://Materials/Wall2.tres
+res://Materials/Wall3.tres

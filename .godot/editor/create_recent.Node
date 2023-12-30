@@ -1,3 +1,7 @@
+LineEdit
+Label
+TextEdit
+CheckBox
 Node3D
 MeshInstance3D
 Node

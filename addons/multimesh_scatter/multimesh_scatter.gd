@@ -318,6 +318,19 @@ var _is_updating := false
 func _init() -> void:
 	_ensure_has_mm()
 
+var _updating_mdt := false
+func _update_mesh_data(mesh_id, mdt):
+	if not _updating_mdt:
+		_updating_mdt = true
+		
+		await get_tree().create_timer(1.0).timeout
+		
+		# debug
+		print("updating mdt " + str(mesh_id))
+		_mesh_data_array[mesh_id] = mdt
+		
+		_updating_mdt = false
+
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		if show_debug_area:
@@ -385,14 +398,13 @@ func _update_debug_area_size() -> void:
 
 func _update() -> void:
 	if !_space: return
-	
 	if not _is_updating:
 		_is_updating = true
 		
 		await get_tree().create_timer(1.0).timeout
 		
 		# debug
-		#print("scattering " + name)
+		print("scattering " + name)
 		scatter()
 		
 		_is_updating = false
@@ -468,7 +480,11 @@ func scatter() -> void:
 					var mdt := MeshDataTool.new()
 					mdt.create_from_surface(mesh.mesh, 0)
 					_mesh_data_array[mesh_id] = mdt
+				
+				#var mdt := MeshDataTool.new()
+				#mdt.create_from_surface(mesh.mesh, 0)
 				var color: Color = _mesh_data_array[mesh_id].get_vertex_color(_get_closest_vertex(_mesh_data_array[mesh_id], mesh.global_transform.origin, hit.position))
+				#var color: Color = mdt.get_vertex_color(_get_closest_vertex(mdt, mesh.global_transform.origin, hit.position))
 				if not (color.r <= r_channel && color.g <= g_channel && color.b <= b_channel):
 					continue
 			else:
