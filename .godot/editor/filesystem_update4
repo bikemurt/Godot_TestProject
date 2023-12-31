@@ -1,9 +1,8 @@
-res://addons/vertex_painter/get_editor_camera.gd
-res://addons/vertex_painter/vertex_painter.tscn
+res://Levels/TerrainTest/TerrainTest.tscn
 res://addons/vertex_painter/shaders/vertex_color.gdshader
 res://Shaders/BlendTextures.gdshader
 res://Levels/TerrainTest/Shaders/grass.gdshader
-res://addons/vertex_painter/Node3D.gd
-res://Levels/TerrainTest/TerrainTest.tscn
+res://addons/vertex_painter/scripts/multimesh_paint.gd
+res://addons/vertex_painter/scripts/primes.txt
+res://addons/vertex_painter/vertex_painter.tscn
 res://Levels/TerrainTest/Shaders/BlendMaterial2.tres
-res://addons/vertex_painter/mat_cache/m_-9223370167671523964.tres

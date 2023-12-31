@@ -8,3 +8,7 @@ clustering_amount=0
 use_angle=false
 show_debug_area=false
 offset_position=Vector3(0,0.5,0)
+use_vertex_colors=true
+r_channel=0
+g_channel=1
+b_channel=0

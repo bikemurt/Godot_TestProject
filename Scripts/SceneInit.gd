@@ -139,6 +139,14 @@ func iterate_scene(node):
 					
 					node.set_surface_override_material(int(surface), material)
 			
+			if "group" in meta:
+				# TBD
+				pass
+			
+			if "prop_file" in meta:
+				# TBD
+				pass
+			
 			if meta == "script":
 				node.set_script(load(meta_val))
 			
@@ -164,8 +172,8 @@ func iterate_scene(node):
 				
 				var mm = scatter.multimesh
 				scatter.multimesh.mesh = target.mesh
-				
 				scatter.set_owner(get_tree().edited_scene_root)
+				
 				##
 				
 				# occlusion culling flickers... more investigation needed
@@ -199,6 +207,12 @@ func iterate_scene(node):
 					dyn_node.set("distance_fade_end", plane_size * 2)
 					
 					dyn_node.set_owner(get_tree().edited_scene_root)
+				##
+				
+				# THIS DOES NOT WORK APPARENTLY
+				if "group" in node.get_meta_list():
+					scatter.add_to_group(node.get_meta("group"))
+				
 				##
 				
 				target.hide()

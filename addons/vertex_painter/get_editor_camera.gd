@@ -39,6 +39,9 @@ func _ready():
 	for v in _editor_viewports:
 		_find_cameras(v)
 	
+	_coloring = false
+	_move_coloring = false
+	
 	node_3d.connect("update_colors", _update_colors)
 
 func _find_viewports(n : Node):
@@ -163,8 +166,9 @@ func _on_check_box_toggled(button_pressed):
 			if id in _mats:
 				var mat = load(_mats[id])
 				_last_3d_node.set_surface_override_material(int(0), mat)
+				_mats.erase(id)
 			else:
-				_last_3d_node.set_surface_override_material(0, null)
+				#_last_3d_node.set_surface_override_material(0, null)
 				printerr("failed to revert material for " + str(_last_3d_node))
 			
 # DEBUG MESH

@@ -481,12 +481,13 @@ func scatter() -> void:
 					mdt.create_from_surface(mesh.mesh, 0)
 					_mesh_data_array[mesh_id] = mdt
 				
-				#var mdt := MeshDataTool.new()
-				#mdt.create_from_surface(mesh.mesh, 0)
 				var color: Color = _mesh_data_array[mesh_id].get_vertex_color(_get_closest_vertex(_mesh_data_array[mesh_id], mesh.global_transform.origin, hit.position))
-				#var color: Color = mdt.get_vertex_color(_get_closest_vertex(mdt, mesh.global_transform.origin, hit.position))
-				if not (color.r <= r_channel && color.g <= g_channel && color.b <= b_channel):
+				
+				var valid_color = (color.r * r_channel) + (color.g * g_channel) + (color.b * b_channel)
+				if valid_color < 0.1:
 					continue
+				#if not (color.r <= r_channel && color.g <= g_channel && color.b <= b_channel):
+				#	continue
 			else:
 				printerr("[MultiMeshScatter]: Cannot find mesh for the vertex color check. Make sure '", hit.collider.name, "' has a MeshInstance3D as a parent.")
 
