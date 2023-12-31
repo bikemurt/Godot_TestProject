@@ -1,11 +1,11 @@
+MeshInstance3D
+Button
 LineEdit
 Label
 TextEdit
 CheckBox
 Node3D
-MeshInstance3D
 Node
-Button
 Control
 OccluderInstance3D
 RigidBody3D

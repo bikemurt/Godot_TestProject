@@ -124,6 +124,14 @@ select_all_on_focus = true
 [node name="Node3D" type="Node3D" parent="."]
 script = ExtResource("2_aplt7")
 
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 324.0
+offset_right = 131.0
+offset_bottom = 359.0
+text = "Bucket Fill"
+
 [connection signal="toggled" from="EnablePaintingCheckBox" to="." method="_on_enable_painting_toggled"]
 [connection signal="toggled" from="ShowVertexColorsCheckBox" to="." method="_on_check_box_toggled"]
 [connection signal="toggled" from="DebugMeshCheckBox" to="." method="_on_check_box_toggled2"]
@@ -131,3 +139,4 @@ script = ExtResource("2_aplt7")
 [connection signal="text_submitted" from="GreenLineEdit" to="." method="_on_line_edit_text_submitted" binds= ["Green"]]
 [connection signal="text_submitted" from="BlueLineEdit" to="." method="_on_line_edit_text_submitted" binds= ["Blue"]]
 [connection signal="text_submitted" from="BrushSizeLineEdit" to="." method="_on_brush_size_text_submitted"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

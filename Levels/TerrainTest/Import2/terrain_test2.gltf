@@ -125,15 +125,8 @@
 	],
 	"materials":[
 		{
-			"doubleSided":true,
-			"name":"Material.002",
-			"pbrMetallicRoughness":{
-				"baseColorTexture":{
-					"index":0
-				},
-				"metallicFactor":0,
-				"roughnessFactor":0.5
-			}
+			"name":"Material_0",
+			"pbrMetallicRoughness":{}
 		},
 		{
 			"alphaMode":"BLEND",
@@ -150,11 +143,11 @@
 			},
 			"name":"Tree",
 			"normalTexture":{
-				"index":1
+				"index":0
 			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":2
+					"index":1
 				},
 				"metallicFactor":0
 			}
@@ -266,18 +259,9 @@
 		{
 			"sampler":0,
 			"source":1
-		},
-		{
-			"sampler":0,
-			"source":2
 		}
 	],
 	"images":[
-		{
-			"mimeType":"image/png",
-			"name":"BlendMap",
-			"uri":"BlendMap.png"
-		},
 		{
 			"mimeType":"image/png",
 			"name":"TreeFraserFirLarge001_Needles01_Geo_LOD0_Bake1_PBR_Normal",
@@ -293,14 +277,14 @@
 		{
 			"bufferView":0,
 			"componentType":5123,
-			"count":10000,
+			"count":10083,
 			"normalized":true,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":10000,
+			"count":10083,
 			"max":[
 				151.25851440429688,
 				46.19780731201172,
@@ -316,13 +300,13 @@
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":10000,
+			"count":10083,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":3,
 			"componentType":5126,
-			"count":10000,
+			"count":10083,
 			"type":"VEC2"
 		},
 		{
@@ -499,146 +483,146 @@
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":80000,
+			"byteLength":80664,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":120000,
-			"byteOffset":80000,
+			"byteLength":120996,
+			"byteOffset":80664,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":120000,
-			"byteOffset":200000,
+			"byteLength":120996,
+			"byteOffset":201660,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":80000,
-			"byteOffset":320000,
+			"byteLength":80664,
+			"byteOffset":322656,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":117612,
-			"byteOffset":400000,
+			"byteOffset":403320,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":14688,
-			"byteOffset":517612,
+			"byteOffset":520932,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":14688,
-			"byteOffset":532300,
+			"byteOffset":535620,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":9792,
-			"byteOffset":546988,
+			"byteOffset":550308,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":13836,
-			"byteOffset":556780,
+			"byteOffset":560100,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":15384,
-			"byteOffset":570616,
+			"byteOffset":573936,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":15384,
-			"byteOffset":586000,
+			"byteOffset":589320,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":10256,
-			"byteOffset":601384,
+			"byteOffset":604704,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":14508,
-			"byteOffset":611640,
+			"byteOffset":614960,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":15384,
-			"byteOffset":626148,
+			"byteOffset":629468,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":15384,
-			"byteOffset":641532,
+			"byteOffset":644852,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":10256,
-			"byteOffset":656916,
+			"byteOffset":660236,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":251676,
-			"byteOffset":667172,
+			"byteOffset":670492,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":251676,
-			"byteOffset":918848,
+			"byteOffset":922168,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":167784,
-			"byteOffset":1170524,
+			"byteOffset":1173844,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":42870,
-			"byteOffset":1338308,
+			"byteOffset":1341628,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":149124,
-			"byteOffset":1381180,
+			"byteOffset":1384500,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":149124,
-			"byteOffset":1530304,
+			"byteOffset":1533624,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":99416,
-			"byteOffset":1679428,
+			"byteOffset":1682748,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":46494,
-			"byteOffset":1778844,
+			"byteOffset":1782164,
 			"target":34963
 		}
 	],
@@ -650,7 +634,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":1825340,
+			"byteLength":1828660,
 			"uri":"terrain_test2.bin"
 		}
 	]
