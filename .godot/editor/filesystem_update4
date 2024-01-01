@@ -6,3 +6,4 @@ res://Levels/TerrainTest/Shaders/grass.gdshader
 res://addons/vertex_painter/shaders/vertex_color.gdshader
 res://addons/vertex_painter/scripts/multimesh_paint.gd
 res://addons/vertex_painter/vertex_painter.tscn
+res://Levels/TerrainTest/Export/Terrain.tres
