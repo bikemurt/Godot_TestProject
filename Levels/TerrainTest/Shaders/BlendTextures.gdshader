@@ -32,7 +32,16 @@ void fragment() {
 	vec3 n1 = texture(Normal1, UVx1).xyz;
 	vec3 n2 = texture(Normal2, UVx2).xyz;
 	
-	ALBEDO = mix(a1, a2, factor);
+	vec3 c = 0.3 * COLOR.rgb;
+	
+	vec3 orig_color = mix(a1, a2, factor);
+	vec3 r_mix = mix(orig_color, vec3(1,0,0), c.r);
+	vec3 g_mix = mix(r_mix, vec3(0,1,0), c.g);
+	vec3 b_mix = mix(g_mix, vec3(0,0,1), c.b);
+	
+	ALBEDO = b_mix;
+	
+	ALBEDO = orig_color;
 	ROUGHNESS = mix(r1, r2, factor.r);
 	METALLIC = mix(Metal1, Metal2, factor.r);
 	SPECULAR = mix(Spec1, Spec2, factor.r);

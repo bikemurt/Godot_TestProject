@@ -152,32 +152,42 @@ func iterate_scene(node):
 			
 			if meta == "multimesh_target":
 				
-				var scatter = MultiMeshInstance3D.new()
-				node.get_parent().add_child(scatter)
+				var mm_i = MultiMeshInstance3D.new()
+				node.get_parent().add_child(mm_i)
 				
-				scatter.name = "MultiMeshScatter"
-				scatter.set_script(load("res://addons/multimesh_scatter/multimesh_scatter.gd"))			
+				mm_i.name = "MultiMesh"
+
+				var scatter_size = Vector3(10,10,10)
+				if "size_x" in metas:
+					scatter_size.x = float(node.get_meta("size_x"))
+					scatter_size.y = float(node.get_meta("size_y"))
+					scatter_size.z = float(node.get_meta("size_z"))
 				
-				var scatter_size = Vector3(0,0,0)
-				scatter_size.x = float(node.get_meta("size_x"))
-				scatter_size.y = float(node.get_meta("size_y"))
-				scatter_size.z = float(node.get_meta("size_z"))
-				scatter.set("scatter_size", scatter_size)
-				scatter.transform = node.transform
+				mm_i.set("scatter_size", scatter_size)
 				
-				if "prop_file" in node.get_meta_list():
-					set_script_params(scatter, node.get_meta("prop_file"))
+				mm_i.transform = node.transform
 				
 				var target : MeshInstance3D = get_node(meta_val)
 				
-				var mm = scatter.multimesh
-				scatter.multimesh.mesh = target.mesh
-				scatter.set_owner(get_tree().edited_scene_root)
+				var mm = MultiMesh.new()
+				mm.transform_format = MultiMesh.TRANSFORM_3D
+				mm.mesh = target.mesh
+				mm_i.multimesh = mm
+				
+				mm_i.set_owner(get_tree().edited_scene_root)
 				
 				##
 				
+				if "script" in metas:
+					mm_i.set_script(load(node.get_meta("script")))
+				
+				##
+				
+				if "prop_file" in metas:
+					set_script_params(mm_i, node.get_meta("prop_file"))
+				
 				# occlusion culling flickers... more investigation needed
-				if "occlusion_culling" in node.get_meta_list():
+				if "occlusion_culling" in metas:
 					var occlusion = OccluderInstance3D.new()
 					node.get_parent().add_child(occlusion)
 					
@@ -191,7 +201,7 @@ func iterate_scene(node):
 					occlusion.set_owner(get_tree().edited_scene_root)
 				##
 				
-				if "camera_node" in node.get_meta_list():
+				if "camera_node" in metas:
 					var dyn_node = Node.new()
 					node.get_parent().add_child(dyn_node)
 					
@@ -199,7 +209,7 @@ func iterate_scene(node):
 					dyn_node.set_script(load(node.get_meta("dynamic_script")))
 					
 					dyn_node.set("target_path", node.get_meta("camera_node"))
-					dyn_node.set("multimesh_path", "../" + scatter.name)
+					dyn_node.set("multimesh_path", "../" + mm_i.name)
 					
 					var plane_size = Vector2(scatter_size.x, scatter_size.z).length()
 					
@@ -210,8 +220,8 @@ func iterate_scene(node):
 				##
 				
 				# THIS DOES NOT WORK APPARENTLY
-				if "group" in node.get_meta_list():
-					scatter.add_to_group(node.get_meta("group"))
+				if "group" in metas:
+					mm_i.add_to_group(node.get_meta("group"), true)
 				
 				##
 				

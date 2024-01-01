@@ -1,0 +1,13 @@
+spacing=3
+custom_normal=Vector3(0,1,0)
+scale_uniformity=0.9
+min_random_size=Vector3(1,1,1)
+max_random_size=Vector3(4,4,4)
+random_rotation=Vector3(5,5,5)
+use_angle=true
+angle_degrees=25
+r_channel=1
+g_channel=0
+b_channel=0
+random_offset_min=Vector3(-2,0,-2)
+random_offset_max=Vector3(2,0,2)

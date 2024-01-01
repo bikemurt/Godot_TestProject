@@ -11,15 +11,15 @@
 				"GodotPipelineProps":{
 					"col_types":0,
 					"path_options":0,
-					"set_path":"res://addons/multimesh_scatter/multimesh_scatter.gd",
+					"set_path":"res://addons/vertex_painter/scripts/multimesh_paint.gd",
 					"display_wire":1,
 					"collision_margin":1.0,
-					"collision_UI":0,
+					"collision_UI":1,
 					"path_UI":1,
 					"multimesh_UI":1,
 					"mm_random_rotation":5.0,
 					"mesh_data":0,
-					"prop_path":"res://Levels/TerrainTest/Import2/mm_tree_params.txt",
+					"prop_path":"res://Levels/TerrainTest/Import2/mm_grass_paint_params.txt",
 					"occlusion_culling":0,
 					"multimesh_UI_dynamic_inst":0,
 					"camera_node_path":"../../player2",
@@ -61,8 +61,9 @@
 				"size_z":"240.8666",
 				"size_y":"39.7152",
 				"multimesh_target":"Grass",
-				"prop_file":"res://Levels/TerrainTest/Import2/mm_grass_params.txt",
-				"group":"vertex_painter"
+				"prop_file":"res://Levels/TerrainTest/Import2/mm_grass_paint_params.txt",
+				"group":"vertex_painter",
+				"script":"res://addons/vertex_painter/scripts/multimesh_paint.gd"
 			},
 			"mesh":1,
 			"name":"GrassMM",
@@ -74,12 +75,13 @@
 		},
 		{
 			"extras":{
+				"multimesh_target":"Tree",
+				"prop_file":"res://Levels/TerrainTest/Import2/mm_tree_paint_params.txt",
+				"group":"vertex_painter",
+				"script":"res://addons/vertex_painter/scripts/multimesh_paint.gd",
 				"size_x":"209.7953",
 				"size_z":"240.8666",
-				"size_y":"39.7152",
-				"multimesh_target":"Tree",
-				"prop_file":"res://Levels/TerrainTest/Import2/mm_tree_params.txt",
-				"group":"vertex_painter"
+				"size_y":"39.7152"
 			},
 			"mesh":2,
 			"name":"TreeMM",
@@ -95,12 +97,7 @@
 		},
 		{
 			"mesh":4,
-			"name":"Grass",
-			"translation":[
-				-0.0017299652099609375,
-				0.2317361831665039,
-				2.288818359375e-05
-			]
+			"name":"Grass"
 		}
 	],
 	"materials":[
@@ -413,35 +410,35 @@
 		{
 			"bufferView":18,
 			"componentType":5126,
-			"count":12427,
+			"count":10752,
 			"max":[
-				1.091318130493164,
+				1.0940628051757812,
 				0.24528121948242188,
-				1.1248664855957031
+				1.1066218614578247
 			],
 			"min":[
-				-1.0968074798583984,
+				-1.0940628051757812,
 				-0.24528121948242188,
-				-1.1032028198242188
+				-1.1066218614578247
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":19,
 			"componentType":5126,
-			"count":12427,
+			"count":10752,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":20,
 			"componentType":5126,
-			"count":12427,
+			"count":10752,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":21,
 			"componentType":5123,
-			"count":23247,
+			"count":18597,
 			"type":"SCALAR"
 		}
 	],
@@ -556,26 +553,26 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":149124,
+			"byteLength":129024,
 			"byteOffset":1742788,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":149124,
-			"byteOffset":1891912,
+			"byteLength":129024,
+			"byteOffset":1871812,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":99416,
-			"byteOffset":2041036,
+			"byteLength":86016,
+			"byteOffset":2000836,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":46494,
-			"byteOffset":2140452,
+			"byteLength":37194,
+			"byteOffset":2086852,
 			"target":34963
 		}
 	],
@@ -587,7 +584,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":2186948,
+			"byteLength":2124048,
 			"uri":"terrain_test2.bin"
 		}
 	]

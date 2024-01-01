@@ -25,12 +25,18 @@ extends MultiMeshInstance3D
 		_update()
 
 ## The y distance above/below the multimesh to search for the terrain.
-@export var search_y := 10.0:
+@export var search_y := 50.0:
 	get: return search_y
 	set(value):
 		search_y = value
 		_update()
-		
+
+## Set the terrain mesh instance target.
+@export_node_path("MeshInstance3D") var terrain_mesh_instance:
+	get: return terrain_mesh_instance
+	set(value):
+		terrain_mesh_instance = value
+
 ## Manually set the normal direction of mesh instances.
 ## If [code]custom_normal[/code] is set to (0,0,0) then the
 ## normal of the terrain will be used by default.
@@ -59,18 +65,6 @@ extends MultiMeshInstance3D
 		collision_mask = value
 		_update()
 
-## Setting this value will copy over the MeshInstance's Mesh to the MultiMeshInstance3D.
-## This is just for convenience.
-@export_node_path("MeshInstance3D") var mesh_instance:
-	get: return mesh_instance
-	set(value):
-		if value:
-			var i := get_node(value)
-			if i and i.mesh:
-				print("[MultiMeshScatter]: Mesh added. You can safely remove the MeshInstance3D.")
-				multimesh.mesh = i.mesh
-				mesh_instance = null
-
 @export_group("Instance Placement")
 
 @export_subgroup("Offset")
@@ -94,6 +88,22 @@ extends MultiMeshInstance3D
 	get: return base_scale
 	set(value):
 		base_scale = value.clamp(Vector3.ONE * 0.01, Vector3.ONE * 100.0)
+		_update()
+
+@export_subgroup("Random Offset")
+
+## Add an offset to the placed instances.
+@export var random_offset_min := Vector3(-1.0, 0.0, -1.0):
+	get: return random_offset_min
+	set(value):
+		random_offset_min = value
+		_update()
+
+## Add a rotation offset to the placed instances.
+@export var random_offset_max := Vector3(1.0, 0.0, 1.0):
+	get: return random_offset_max
+	set(value):
+		random_offset_max = value
 		_update()
 
 @export_subgroup("Random Size")
@@ -220,7 +230,7 @@ func _update_mesh_data(mesh_id, mdt):
 		await get_tree().create_timer(1.0).timeout
 		
 		# debug
-		print("updating mdt " + str(mesh_id))
+		#print("updating mdt " + str(mesh_id))
 		_mesh_data_array[mesh_id] = mdt
 		
 		_updating_mdt = false
@@ -246,7 +256,7 @@ func _update() -> void:
 		await get_tree().create_timer(1.0).timeout
 		
 		# debug
-		print("scattering " + name)
+		#print("scattering " + name)
 		scatter()
 		
 		_is_updating = false
@@ -261,29 +271,35 @@ func scatter() -> void:
 	_rng.seed = seed
 
 	multimesh.instance_count = 0
-
-	# new version - run a single ray cast from above the multimesh
-	# location downward to find the terrain
-	var pos := global_position
-	var ray := PhysicsRayQueryParameters3D.create(
-		pos + Vector3.UP * search_y,
-		pos + Vector3.DOWN * search_y,
-		collision_mask)
 	
-	var hit := _space.intersect_ray(ray)
-	if hit.is_empty():
-		printerr("[multimesh_paint] No terrain was found")
+	var mesh_i : MeshInstance3D
+	if terrain_mesh_instance != null:
+		mesh_i = get_node(terrain_mesh_instance)
+	else:
+		# new version - run a single ray cast from above the multimesh
+		# location downward to find the terrain
+		var pos := global_position
+		var ray := PhysicsRayQueryParameters3D.create(
+			pos + Vector3.UP * search_y,
+			pos + Vector3.DOWN * search_y,
+			collision_mask)
+		
+		var hit := _space.intersect_ray(ray)
+		if hit.is_empty():
+			printerr("[multimesh_paint] No terrain was found")
+			return
+	
+		mesh_i = _find_mesh(hit.collider)
+	
+	if not mesh_i:
+		printerr("[multimesh_paint] No terrain mesh instance was found.")
 		return
 	
-	var mesh_i := _find_mesh(hit.collider)
 	var mesh_id := mesh_i.get_instance_id()
-	if mesh_i:
-		if not _mesh_data_array.has(mesh_id):
-			var mdt_temp := MeshDataTool.new()
-			mdt_temp.create_from_surface(mesh_i.mesh, 0)
-			_mesh_data_array[mesh_id] = mdt_temp
-	else:
-		printerr("[MultiMeshScatter]: Could not find a MeshInstance3D parented to this collision object")
+	if not _mesh_data_array.has(mesh_id):
+		var mdt_temp := MeshDataTool.new()
+		mdt_temp.create_from_surface(mesh_i.mesh, 0)
+		_mesh_data_array[mesh_id] = mdt_temp
 
 	var mdt : MeshDataTool = _mesh_data_array[mesh_id]
 
@@ -291,7 +307,8 @@ func scatter() -> void:
 	var vert_positions = []
 	var vert_normals = []
 	for v in range(mdt.get_vertex_count()):
-
+		
+		# density algorithm uses prime numbers
 		var skip = false
 		for p_index in range(spacing):
 			var p = _primes[p_index]
@@ -316,18 +333,12 @@ func scatter() -> void:
 			vert_normals.append(v_nrm)
 	
 	var l = clampi(len(vert_positions), 0, hard_limit)
+	
 	multimesh.instance_count = l
-	multimesh.visible_instance_count = -1
 	
 	for i in range(l):
 		var v_pos = vert_positions[i]
 		var v_nrm = vert_normals[i]
-		
-		var rand_offset = Vector3(0,0,0)
-		rand_offset.x += _rng.randf_range(-1, 1)
-		rand_offset.z += _rng.randf_range(-1, 1)
-		
-		v_pos += rand_offset
 		
 		if not custom_normal.is_zero_approx():
 			v_nrm = custom_normal.normalized()
@@ -348,11 +359,25 @@ func scatter() -> void:
 		scale_y = scale_uniformity * scale_x + (1.0 - scale_uniformity) * scale_y
 		scale_z = scale_uniformity * scale_x + (1.0 - scale_uniformity) * scale_z
 		
+		var rand_scale = Vector3(scale_x, scale_y, scale_z)
+		
+		var rand_offset = Vector3(0,0,0)
+		rand_offset.x += _rng.randf_range(random_offset_min.x, random_offset_max.x)
+		rand_offset.y += _rng.randf_range(random_offset_min.y, random_offset_max.y)
+		rand_offset.z += _rng.randf_range(random_offset_min.z, random_offset_max.z)
+		
+		# the random offset should be scaled by the scale amount
+		v_pos += rand_offset# / rand_scale
+		
 		t = t\
+			.scaled(base_scale)\
+			.scaled(rand_scale)\
 			.rotated(Vector3.RIGHT, deg_to_rad(_rng.randf_range(-random_rotation.x, random_rotation.x) + offset_rotation.x))\
 			.rotated(Vector3.UP, deg_to_rad(_rng.randf_range(-random_rotation.y, random_rotation.y) + offset_rotation.y))\
-			.rotated(Vector3.FORWARD, deg_to_rad(_rng.randf_range(-random_rotation.z, random_rotation.z) + offset_rotation.z))\
-			.scaled(Vector3(scale_x, scale_y, scale_z))
+			.rotated(Vector3.FORWARD, deg_to_rad(_rng.randf_range(-random_rotation.z, random_rotation.z) + offset_rotation.z))
+			
+		#t = t.translated(rand_offset)
+		
 		t.origin = v_pos - global_position + offset_position
 
 		multimesh.set_instance_transform(i, t)

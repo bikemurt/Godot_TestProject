@@ -1,8 +1,8 @@
+res://Levels/TerrainTest/Export
 C:/Godot/Projects/TestProject/addons/vertex_painter/scripts
 res://addons/vertex_painter/scripts
 res://Scripts
 C:/Godot/Projects/TestProject/Levels/TerrainTest/Export
-res://Levels/TerrainTest/Export
 res://addons/vertex_painter/shaders
 res://Levels/TerrainTest/Scripts
 res://addons/vertex_painter
@@ -20,4 +20,3 @@ res://Testing/Ball
 res://Scripts/Testing
 res://Characters/AnimationTest
 res://Levels/Andarin/ManualImport
-res://Levels/Andarin/Materials

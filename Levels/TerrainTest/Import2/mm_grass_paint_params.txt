@@ -1,0 +1,11 @@
+spacing=1
+scale_uniformity=0.9
+base_scale=Vector3(2,2,2)
+min_random_size=Vector3(1,1,1)
+max_random_size=Vector3(1,1,1)
+r_channel=0
+g_channel=1
+b_channel=0
+offset_position=Vector3(0,0.5,0)
+random_offset_min=Vector3(-0.5,-0.5,-0.5)
+random_offset_max=Vector3(0.5,0.5,0.5)
