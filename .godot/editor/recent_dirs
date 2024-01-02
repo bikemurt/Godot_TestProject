@@ -1,3 +1,4 @@
+res://Levels/TerrainTest/Shaders
 res://Levels/TerrainTest/Export
 C:/Godot/Projects/TestProject/addons/vertex_painter/scripts
 res://addons/vertex_painter/scripts
@@ -6,7 +7,6 @@ C:/Godot/Projects/TestProject/Levels/TerrainTest/Export
 res://addons/vertex_painter/shaders
 res://Levels/TerrainTest/Scripts
 res://addons/vertex_painter
-res://Levels/TerrainTest/Shaders
 res://Levels/TerrainTest/Occluders
 C:/Godot/Projects/TestProject/Levels/TerrainTest/Import2
 res://addons/multimesh_scatter

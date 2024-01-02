@@ -14,9 +14,9 @@
 					"set_path":"res://addons/vertex_painter/scripts/multimesh_paint.gd",
 					"display_wire":1,
 					"collision_margin":1.0,
-					"collision_UI":1,
-					"path_UI":1,
-					"multimesh_UI":1,
+					"collision_UI":0,
+					"path_UI":0,
+					"multimesh_UI":0,
 					"mm_random_rotation":5.0,
 					"mesh_data":0,
 					"prop_path":"res://Levels/TerrainTest/Import2/mm_grass_paint_params.txt",
@@ -24,24 +24,22 @@
 					"multimesh_UI_dynamic_inst":0,
 					"camera_node_path":"../../player2",
 					"dynamic_script":"res://Levels/TerrainTest/Scripts/mm_visibility.gd",
-					"vertex_painter":1
+					"vertex_painter":1,
+					"export_UI":1,
+					"save_path":"//..\\..\\..\\..\\Godot\\Projects\\TestProject\\Levels\\TerrainTest\\Import2\\terrain_test2.gltf"
 				},
 				"GRT_Action_Bakery_Global_Settings":{
 					"Source_Armature":{},
 					"Target_Armature":{}
 				},
 				"target":{
-					"name":"Tree",
+					"name":"Tree1",
 					"type":"Object"
 				}
 			},
 			"name":"Scene",
 			"nodes":[
-				0,
-				1,
-				2,
-				3,
-				4
+				0
 			]
 		}
 	],
@@ -54,98 +52,16 @@
 			},
 			"mesh":0,
 			"name":"Terrain"
-		},
-		{
-			"extras":{
-				"size_x":"209.7953",
-				"size_z":"240.8666",
-				"size_y":"39.7152",
-				"multimesh_target":"Grass",
-				"prop_file":"res://Levels/TerrainTest/Import2/mm_grass_paint_params.txt",
-				"group":"vertex_painter",
-				"script":"res://addons/vertex_painter/scripts/multimesh_paint.gd"
-			},
-			"mesh":1,
-			"name":"GrassMM",
-			"translation":[
-				-45.27032470703125,
-				6.140909194946289,
-				31.568843841552734
-			]
-		},
-		{
-			"extras":{
-				"multimesh_target":"Tree",
-				"prop_file":"res://Levels/TerrainTest/Import2/mm_tree_paint_params.txt",
-				"group":"vertex_painter",
-				"script":"res://addons/vertex_painter/scripts/multimesh_paint.gd",
-				"size_x":"209.7953",
-				"size_z":"240.8666",
-				"size_y":"39.7152"
-			},
-			"mesh":2,
-			"name":"TreeMM",
-			"translation":[
-				-45.27032470703125,
-				6.140909194946289,
-				31.568843841552734
-			]
-		},
-		{
-			"mesh":3,
-			"name":"Tree"
-		},
-		{
-			"mesh":4,
-			"name":"Grass"
 		}
 	],
 	"materials":[
 		{
 			"doubleSided":true,
-			"name":"Material.002",
+			"name":"BlendMap",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
 					"index":0
 				},
-				"metallicFactor":0,
-				"roughnessFactor":0.5
-			}
-		},
-		{
-			"alphaMode":"BLEND",
-			"doubleSided":true,
-			"extras":{
-				"lp":{
-					"uid":"0ec4eb3f34"
-				},
-				"DM":{},
-				"SB_baked_orig_objects":[
-					"TreeFraserFirLarge001_Needles01_Geo_LOD0"
-				],
-				"SB_bake_operation_id":"b4e9a452-2695-47e0-8f3c-1b4a1662e9e3"
-			},
-			"name":"Tree",
-			"normalTexture":{
-				"index":1
-			},
-			"pbrMetallicRoughness":{
-				"baseColorTexture":{
-					"index":2
-				},
-				"metallicFactor":0
-			}
-		},
-		{
-			"doubleSided":true,
-			"name":"Grass",
-			"pbrMetallicRoughness":{
-				"baseColorFactor":[
-					0.0896579846739769,
-					0.22658415138721466,
-					0.013961032964289188,
-					1
-				],
 				"metallicFactor":0,
 				"roughnessFactor":0.5
 			}
@@ -166,76 +82,12 @@
 					"material":0
 				}
 			]
-		},
-		{
-			"name":"Terrain.002",
-			"primitives":[
-				{
-					"attributes":{
-						"COLOR_0":5,
-						"POSITION":6,
-						"NORMAL":7,
-						"TEXCOORD_0":8
-					},
-					"indices":9
-				}
-			]
-		},
-		{
-			"name":"Terrain.005",
-			"primitives":[
-				{
-					"attributes":{
-						"COLOR_0":10,
-						"POSITION":11,
-						"NORMAL":12,
-						"TEXCOORD_0":13
-					},
-					"indices":9
-				}
-			]
-		},
-		{
-			"name":"Tree",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":14,
-						"NORMAL":15,
-						"TEXCOORD_0":16
-					},
-					"indices":17,
-					"material":1
-				}
-			]
-		},
-		{
-			"name":"Grass",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":18,
-						"NORMAL":19,
-						"TEXCOORD_0":20
-					},
-					"indices":21,
-					"material":2
-				}
-			]
 		}
 	],
 	"textures":[
 		{
 			"sampler":0,
 			"source":0
-		},
-		{
-			"sampler":0,
-			"source":1
-		},
-		{
-			"sampler":0,
-			"source":2
 		}
 	],
 	"images":[
@@ -243,16 +95,6 @@
 			"mimeType":"image/png",
 			"name":"BlendMap",
 			"uri":"BlendMap.png"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"TreeFraserFirLarge001_Needles01_Geo_LOD0_Bake1_PBR_Normal",
-			"uri":"TreeFraserFirLarge001_Needles01_Geo_LOD0_Bake1_PBR_Normal.png"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"TreeFraserFirLarge001_Needles01_Geo_LOD0_Bake1_PBR_Diffuse",
-			"uri":"TreeFraserFirLarge001_Needles01_Geo_LOD0_Bake1_PBR_Diffuse.png"
 		}
 	],
 	"accessors":[
@@ -296,150 +138,6 @@
 			"componentType":5123,
 			"count":58806,
 			"type":"SCALAR"
-		},
-		{
-			"bufferView":5,
-			"componentType":5123,
-			"count":5551,
-			"normalized":true,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":6,
-			"componentType":5126,
-			"count":5551,
-			"max":[
-				104.89765930175781,
-				19.857587814331055,
-				120.43328857421875
-			],
-			"min":[
-				-104.89765930175781,
-				-19.857587814331055,
-				-120.43328857421875
-			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":7,
-			"componentType":5126,
-			"count":5551,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":8,
-			"componentType":5126,
-			"count":5551,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":9,
-			"componentType":5123,
-			"count":31884,
-			"type":"SCALAR"
-		},
-		{
-			"bufferView":10,
-			"componentType":5123,
-			"count":5551,
-			"normalized":true,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":11,
-			"componentType":5126,
-			"count":5551,
-			"max":[
-				104.89765930175781,
-				19.857587814331055,
-				120.43328857421875
-			],
-			"min":[
-				-104.89765930175781,
-				-19.857587814331055,
-				-120.43328857421875
-			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":12,
-			"componentType":5126,
-			"count":5551,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":13,
-			"componentType":5126,
-			"count":5551,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":14,
-			"componentType":5126,
-			"count":20973,
-			"max":[
-				0.8722996115684509,
-				3.4627370834350586,
-				0.998790979385376
-			],
-			"min":[
-				-0.9203543066978455,
-				-0.018046392127871513,
-				-0.8897016644477844
-			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":15,
-			"componentType":5126,
-			"count":20973,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":16,
-			"componentType":5126,
-			"count":20973,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":17,
-			"componentType":5123,
-			"count":21435,
-			"type":"SCALAR"
-		},
-		{
-			"bufferView":18,
-			"componentType":5126,
-			"count":10752,
-			"max":[
-				1.0940628051757812,
-				0.24528121948242188,
-				1.1066218614578247
-			],
-			"min":[
-				-1.0940628051757812,
-				-0.24528121948242188,
-				-1.1066218614578247
-			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":19,
-			"componentType":5126,
-			"count":10752,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":20,
-			"componentType":5126,
-			"count":10752,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":21,
-			"componentType":5123,
-			"count":18597,
-			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
@@ -472,108 +170,6 @@
 			"byteLength":117612,
 			"byteOffset":403320,
 			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":44408,
-			"byteOffset":520932,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":66612,
-			"byteOffset":565340,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":66612,
-			"byteOffset":631952,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":44408,
-			"byteOffset":698564,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":63768,
-			"byteOffset":742972,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":44408,
-			"byteOffset":806740,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":66612,
-			"byteOffset":851148,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":66612,
-			"byteOffset":917760,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":44408,
-			"byteOffset":984372,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":251676,
-			"byteOffset":1028780,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":251676,
-			"byteOffset":1280456,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":167784,
-			"byteOffset":1532132,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":42870,
-			"byteOffset":1699916,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":129024,
-			"byteOffset":1742788,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":129024,
-			"byteOffset":1871812,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":86016,
-			"byteOffset":2000836,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":37194,
-			"byteOffset":2086852,
-			"target":34963
 		}
 	],
 	"samplers":[
@@ -584,7 +180,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":2124048,
+			"byteLength":520932,
 			"uri":"terrain_test2.bin"
 		}
 	]

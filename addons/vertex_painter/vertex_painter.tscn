@@ -63,7 +63,7 @@ offset_bottom = 104.0
 tooltip_text = "Green value
 
 Press ENTER to set value"
-text = "1"
+text = "0"
 clear_button_enabled = true
 select_all_on_focus = true
 
@@ -76,7 +76,7 @@ offset_bottom = 140.0
 tooltip_text = "Blue value
 
 Press ENTER to set value"
-text = "1"
+text = "0"
 clear_button_enabled = true
 select_all_on_focus = true
 

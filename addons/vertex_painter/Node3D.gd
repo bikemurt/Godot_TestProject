@@ -14,6 +14,12 @@ func _ready():
 	get_parent().connect("project_mouse", _color_mesh)
 	get_parent().connect("lock", _lock)
 	get_parent().connect("bucket_fill", _bucket_fill)
+	get_parent().connect("update_mesh_data", _update_mesh_data)
+
+func _update_mesh_data(mesh_id, mdt):
+	# debug
+	#print("Vertex tool updating mdt " + str(mesh_id))
+	_mesh_data_array[mesh_id] = mdt
 
 func _get_mdt(mesh_i: MeshInstance3D):
 	var mesh_id := mesh_i.get_instance_id()
@@ -37,7 +43,7 @@ func _lock(node, state):
 			
 		_lock(child, state)
 
-func _color_mesh(from, to, n=1, debug=false):
+func _color_mesh(from, to, n=1):
 	var ray := PhysicsRayQueryParameters3D.create(
 		from, to, 0x1)
 	

@@ -5,6 +5,7 @@ signal project_mouse
 signal delete_debug_mesh
 signal lock
 signal bucket_fill
+signal update_mesh_data
 
 const NODE_3D_VIEWPORT_CLASS_NAME = "Node3DEditorViewport"
 const SHADER_PATH = "res://addons/vertex_painter/shaders"
@@ -13,14 +14,16 @@ var _editor_interface : EditorInterface
 var _editor_viewports : Array = []
 var _editor_cameras : Array = []
 
-var _debug_mesh := false
-
-var _red := 1.0
-var _green := 1.0
-var _blue := 1.0
+## UI DEFAULTS
 
 var _enable_painting := false
+var _red := 1.0
+var _green := 0.0
+var _blue := 0.0
 var _brush_size : int = 5
+
+##
+
 var _move_coloring := false
 var _coloring = false
 var _last_position := Vector2(0,0)
@@ -45,6 +48,12 @@ func _ready():
 	_coloring = false
 	_move_coloring = false
 	_mats = {}
+	
+	$EnablePaintingCheckBox.button_pressed = _enable_painting
+	$RedLineEdit.text = str(_red)
+	$GreenLineEdit.text = str(_green)
+	$BlueLineEdit.text = str(_blue)
+	$BrushSizeLineEdit.text = str(_brush_size)
 	
 	node_3d.connect("update_colors", _update_colors)
 
@@ -77,7 +86,7 @@ func _color(event):
 	var from = camera.project_ray_origin(mouse_coords)
 	var to = from + camera.project_ray_normal(mouse_coords) * 1_000
 	
-	project_mouse.emit(from, to, _brush_size, _debug_mesh)
+	project_mouse.emit(from, to, _brush_size)
 		
 func _input(event):
 	if event is InputEventMouseButton:
@@ -131,10 +140,13 @@ func _update_mesh(mesh_i: MeshInstance3D, mdt: MeshDataTool):
 	mesh_i.mesh.clear_surfaces()
 	mdt.commit_to_surface(mesh_i.mesh)
 	
-	get_tree().call_group("vertex_painter", "_update")
-	
+	_notify_plugins(mesh_i, mdt)
+
+func _notify_plugins(mesh_i: MeshInstance3D, mdt: MeshDataTool):
 	var mi_id = mesh_i.get_instance_id()
 	get_tree().call_group("vertex_painter", "_update_mesh_data", mi_id, mdt)
+	
+	get_tree().call_group("vertex_painter", "_update")
 
 func _update_colors(mdt, idxs, mesh_i: MeshInstance3D):
 	var color = Color(_red, _green, _blue)
@@ -177,11 +189,20 @@ func _on_line_edit_text_submitted(new_text, color):
 	var line_edit = get_node(color + "LineEdit")
 	line_edit.text = str(val)
 
+func _bump_first_node3d(node):
+	if node is Node3D:
+		node.translate(Vector3(0, 0, 0))
+	else:
+		for child in node.get_children():
+			_bump_first_node3d(child)
+
 # ENABLE PAINTING
 func _on_enable_painting_toggled(button_pressed):
 	_enable_painting = button_pressed
 	
 	lock.emit(_editor_interface.get_edited_scene_root(), button_pressed)
+	
+	_bump_first_node3d(_editor_interface.get_edited_scene_root())
 	
 	if _enable_painting:
 		_editor_interface.set_main_screen_editor("3D")
@@ -222,12 +243,11 @@ func _on_copy_vertex_colorto_active_button_pressed():
 		for v in range(mdt.get_vertex_count()):
 			active_mdt.set_vertex_color(v, mdt.get_vertex_color(v))
 		
-		active_mesh_i.mesh.clear_surfaces()
-		active_mdt.commit_to_surface(active_mesh_i.mesh)
+		update_mesh_data.emit(active_mesh_i.get_instance_id(), active_mdt)
+		_update_mesh(active_mesh_i, active_mdt)
 	else:
 		printerr("Failed to load mesh from " + mesh_instance_path.text)
 	pass # Replace with function body.
-
 
 func _on_save_mesh_to_path_pressed():
 	ResourceSaver.save(_last_mesh_i.mesh, mesh_instance_path.text)

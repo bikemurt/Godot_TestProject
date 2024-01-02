@@ -1,9 +1,6 @@
 res://Levels/TerrainTest/TerrainTest.tscn
 res://Levels/TerrainTest/Shaders/BlendTextures.gdshader
-res://Levels/TerrainTest/Shaders/BlendMaterial2.tres
 res://Shaders/BlendTextures.gdshader
 res://Levels/TerrainTest/Shaders/grass.gdshader
 res://addons/vertex_painter/shaders/vertex_color.gdshader
-res://addons/vertex_painter/scripts/multimesh_paint.gd
-res://addons/vertex_painter/vertex_painter.tscn
-res://Levels/TerrainTest/Export/Terrain.tres
+res://Levels/TerrainTest/Shaders/BlendMaterial2.tres

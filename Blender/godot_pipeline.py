@@ -22,13 +22,8 @@ from bpy.props import (
         )
 
 class GodotPipelineProperties(PropertyGroup):
-    ## UI
-    collision_UI : bpy.props.BoolProperty(name = "Collisions", default=False)
-    path_UI : bpy.props.BoolProperty(name = "Set Scripts, Materials, etc.", default = False)
-    multimesh_UI : bpy.props.BoolProperty(name = "Multimesh", default = False)
-    multimesh_UI_dynamic_inst : bpy.props.BoolProperty(name = "Dynamic Instancing", default = False)
-    
     ## COLLISION
+    collision_UI : BoolProperty(name = "Collisions", default=False)
     collision_margin : FloatProperty(name = 'Collision Margin', default = 1.03)
     col_types : EnumProperty(
         name =  "Collision",
@@ -49,6 +44,7 @@ class GodotPipelineProperties(PropertyGroup):
     display_wire: BoolProperty(name = "Display Wireframe", default = False)
     
     ## SET PATHS
+    path_UI : BoolProperty(name = "Set Scripts, Materials, etc.", default = False)
     set_path : StringProperty(name = "Set Path", default = "")
     path_options : EnumProperty(
         name =  "Path Type",
@@ -64,9 +60,16 @@ class GodotPipelineProperties(PropertyGroup):
     prop_path : StringProperty(name = "Prop File", default = "")
     
     ## Multimesh
+    multimesh_UI : BoolProperty(name = "Multimesh", default = False)
+    multimesh_UI_dynamic_inst : BoolProperty(name = "Dynamic Instancing", default = False)
     occlusion_culling : BoolProperty(name = "Occlusion Culling", default = False)
     camera_node_path : StringProperty(name = "Camera Node", default = "")
     dynamic_script : StringProperty(name = "Script", default = "")
+    vertex_painter : BoolProperty(name = "Vertex Painter Addon", default = False)
+    
+    # SAVE
+    export_UI : BoolProperty(name = "Export", default = False)
+    save_path : StringProperty(name = "", description = "Select file", default="", maxlen=1024, subtype='FILE_PATH')
 
 class GodotPipelinePanel(bpy.types.Panel):
     bl_idname = "OBJECT_PT_godot_pipeline"
@@ -189,8 +192,25 @@ class GodotPipelinePanel(bpy.types.Panel):
                 row.prop(props, "dynamic_script")
             
             row = box.row()
+            row.prop(props, "vertex_painter")
+            
+            row = box.row()
             row.operator("object.set_multimesh", icon='NONE', text="Set Multimesh")
         
+        box = layout.box()
+        
+        row = box.row()
+        row.prop(props, "export_UI",
+            icon="TRIA_DOWN" if props.multimesh_UI else "TRIA_RIGHT",
+            icon_only=False, emboss=False
+        )
+        
+        if props.export_UI:
+            row = box.row()
+            row.prop(props, "save_path")
+            
+            row = box.row()
+            row.operator("object.godot_export", icon='NONE', text="Export for Godot")
         ###
         
 class SetCollisions(bpy.types.Operator):
@@ -389,9 +409,13 @@ class SetMultimesh(bpy.types.Operator):
             if props.occlusion_culling:
                 obj["occlusion_culling"] = "true"
             
-            if props.camera_node_path != "":
-                obj["camera_node"] = props.camera_node_path
-                obj["dynamic_script"] = props.dynamic_script
+            if props.multimesh_UI_dynamic_inst:
+                if props.camera_node_path != "":
+                    obj["camera_node"] = props.camera_node_path
+                    obj["dynamic_script"] = props.dynamic_script
+            
+            if props.vertex_painter:
+                obj["group"] = "vertex_painter"
 
         return {'FINISHED'}
 
@@ -411,8 +435,20 @@ class ClearAllCustoms(bpy.types.Operator):
         
         return {'FINISHED'}
 
+class GodotExport(bpy.types.Operator):
+    """Godot Export"""
+    bl_idname = "object.godot_export"
+    bl_label = "Godot Export"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        scene = context.scene
+        props = scene.GodotPipelineProps
+        bpy.ops.export_scene.gltf(filepath=bpy.path.abspath(props.save_path), export_format='GLTF_SEPARATE', export_extras=True, use_visible=True)        
+        return {'FINISHED'}
+
 classes = [GodotPipelineProperties, GodotPipelinePanel, SelectCollisions,\
-    SetCollisions, SetCollisionSize, ResetOriginBB, SetPath, SetMultimesh, ClearAllCustoms, SetScriptProperties]
+    SetCollisions, SetCollisionSize, ResetOriginBB, SetPath, SetMultimesh, ClearAllCustoms, SetScriptProperties, GodotExport]
 
 def register():
     for cls in classes:
