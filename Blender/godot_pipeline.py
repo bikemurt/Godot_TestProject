@@ -57,7 +57,7 @@ class GodotPipelineProperties(PropertyGroup):
         ),
         default = "script"
     )
-    prop_path : StringProperty(name = "Prop File", default = "")
+    prop_path : StringProperty(name = "Param File", default = "")
     
     ## Multimesh
     multimesh_UI : BoolProperty(name = "Multimesh", default = False)
@@ -162,7 +162,7 @@ class GodotPipelinePanel(bpy.types.Panel):
             row.prop(props, "prop_path")
             
             row = box.row()
-            row.operator("object.set_script_properties", icon='NONE', text="Set Script Properties")
+            row.operator("object.set_script_properties", icon='NONE', text="Set Script Parameters")
         
         box = layout.box()
         
