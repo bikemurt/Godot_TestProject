@@ -11,3 +11,4 @@ g_channel=0
 b_channel=0
 random_offset_min=Vector3(-2,0,-2)
 random_offset_max=Vector3(2,0,2)
+offset_position=Vector(0,-0.5,0)

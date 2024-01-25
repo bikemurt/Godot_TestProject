@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="TestProject"
-run/main_scene="res://Levels/TerrainTest/TerrainTest.tscn"
+run/main_scene="res://Levels/TurretTest/TurretTest.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -22,6 +22,10 @@ window/size/mode=3
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/vertex_painter/plugin.cfg")
+
+[filesystem]
+
+import/blender/enabled=false
 
 [input]
 

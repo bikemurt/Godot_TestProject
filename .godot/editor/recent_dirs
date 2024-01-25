@@ -1,8 +1,13 @@
+res://Scripts
+res://Levels/TerrainTest/MeshBackups
 res://Levels/TerrainTest/Shaders
+res://Levels/TurretTest/Import
+res://Levels/TurretTest/Shaders
+C:/Program Files/Blender Foundation/Blender 3.6
+C:/Godot/Projects/TestProject/Levels/SciFiLevel/Import
 res://Levels/TerrainTest/Export
 C:/Godot/Projects/TestProject/addons/vertex_painter/scripts
 res://addons/vertex_painter/scripts
-res://Scripts
 C:/Godot/Projects/TestProject/Levels/TerrainTest/Export
 res://addons/vertex_painter/shaders
 res://Levels/TerrainTest/Scripts
@@ -15,8 +20,3 @@ res://Levels/Andarin/Import
 res://MultiAssets/Grass01
 res://Levels/TestLevel
 res://Levels/UndergroundShipLaunch/Scripts
-res://Levels/UndergroundShipLaunch/Anims
-res://Testing/Ball
-res://Scripts/Testing
-res://Characters/AnimationTest
-res://Levels/Andarin/ManualImport

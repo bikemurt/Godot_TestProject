@@ -1,3 +1,6 @@
+StaticBody3D
+WorldEnvironment
+OmniLight3D
 MeshInstance3D
 Button
 LineEdit
@@ -11,9 +14,7 @@ OccluderInstance3D
 RigidBody3D
 SpringArm3D
 CollisionShape3D
-StaticBody3D
 MultiMeshInstance3D
-WorldEnvironment
 SpotLight3D
 NodeTest
 Camera3D

@@ -12,12 +12,16 @@ func _ready():
 	if Engine.is_editor_hint():
 		if get_meta("run"):
 			print("Running scene init")
+			
 			iterate_scene(self)
 			
 			reparent_pass()
 			delete_pass()
 			staticbody_cleanup()
 			rigidbody_cleanup()
+			
+			#self.scene_file_path = ""
+			#self.set_owner(get_tree().edited_scene_root)
 			
 			# ensure that SceneInit only runs once
 			set_meta("run", false)
@@ -155,8 +159,6 @@ func iterate_scene(node):
 				var mm_i = MultiMeshInstance3D.new()
 				node.get_parent().add_child(mm_i)
 				
-				mm_i.name = "MultiMesh"
-
 				var scatter_size = Vector3(10,10,10)
 				if "size_x" in metas:
 					scatter_size.x = float(node.get_meta("size_x"))
@@ -168,6 +170,7 @@ func iterate_scene(node):
 				mm_i.transform = node.transform
 				
 				var target : MeshInstance3D = get_node(meta_val)
+				mm_i.name = target.name + "_Multimesh"
 				
 				var mm = MultiMesh.new()
 				mm.transform_format = MultiMesh.TRANSFORM_3D

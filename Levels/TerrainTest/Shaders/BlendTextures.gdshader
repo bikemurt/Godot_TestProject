@@ -54,14 +54,14 @@ void fragment() {
 	float spec_2 = mix(spec_1, Spec3, factor.g);
 	vec3 normal_2 = mix(normal_1, n3, factor.g);
 	
-	//vec3 c = 0.3 * COLOR.rgb;
-	//vec3 r_mix = mix(orig_color, vec3(1,0,0), c.r);
-	//vec3 g_mix = mix(r_mix, vec3(0,1,0), c.g);
-	//vec3 b_mix = mix(g_mix, vec3(0,0,1), c.b);
+	vec3 c = 0.3 * COLOR.rgb;
+	vec3 r_mix = mix(albedo_2, vec3(1,0,0), c.r);
+	vec3 g_mix = mix(r_mix, vec3(0,1,0), c.g);
+	vec3 b_mix = mix(g_mix, vec3(0,0,1), c.b);
 	
-	//ALBEDO = b_mix;
 	
 	ALBEDO = albedo_2;
+	//ALBEDO = b_mix;
 	ROUGHNESS = rough_2;
 	METALLIC = metal_2;
 	SPECULAR = spec_2;

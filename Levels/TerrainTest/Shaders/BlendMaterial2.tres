@@ -12,7 +12,7 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_c0s1y")
-shader_parameter/UVFactor1 = 17.0
+shader_parameter/UVFactor1 = 25.0
 shader_parameter/UVFactor2 = 10.0
 shader_parameter/UVFactor3 = 20.0
 shader_parameter/Metal1 = 0.2

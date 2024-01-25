@@ -30,7 +30,6 @@ class GodotPipelineProperties(PropertyGroup):
         items = (
             ("BOX", "Box", ""),
             ("CYLINDER", "Cylinder", ""),
-            ("SKIP", "Skip", ""),
             ("TRIMESH", "Trimesh", ""),
             ("SIMPLE", "Simple", ""),
             ("BODYONLY", "Body Only", ""),
@@ -127,18 +126,18 @@ class GodotPipelinePanel(bpy.types.Panel):
             row.prop(props, "display_wire")
             
             row = box.row()
-            row.operator("object.set_collisions", icon='NONE', text="Set Collisions")
-            
-            row = box.row()
-            row.operator("object.reset_origin_bb", icon='NONE', text="Set Origins to Bounding Box")
-            
-            box.separator()
-            
-            row = box.row()
             row.prop(props, "collision_margin")
             
             row = box.row()
-            row.operator("object.set_collision_size", icon='NONE', text="Set Collision Sizes")
+            row.operator("object.set_collisions", icon='NONE', text="Set Collisions")
+            
+            #row = box.row()
+            #row.operator("object.reset_origin_bb", icon='NONE', text="Set Origins to Bounding Box")
+            
+            #box.separator()
+            
+            #row = box.row()
+            #row.operator("object.set_collision_size", icon='NONE', text="Set Collision Sizes")
         
         box = layout.box()
         
@@ -248,6 +247,11 @@ class SetCollisions(bpy.types.Operator):
                 
             else:
                 obj["collision"] = props.col_types.lower()+rigid+col_only
+
+        ## this is somewhat hacked in here, and could be optimized
+        if props.col_types == "BOX" or props.col_types == "CYLINDER":
+            bpy.ops.object.reset_origin_bb()
+            bpy.ops.object.set_collision_size()
 
         return {'FINISHED'}
 
@@ -444,7 +448,7 @@ class GodotExport(bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         props = scene.GodotPipelineProps
-        bpy.ops.export_scene.gltf(filepath=bpy.path.abspath(props.save_path), export_format='GLTF_SEPARATE', export_extras=True, use_visible=True)        
+        bpy.ops.export_scene.gltf(filepath=bpy.path.abspath(props.save_path), export_format='GLTF_SEPARATE', export_extras=True, use_visible=True, export_apply=True)
         return {'FINISHED'}
 
 classes = [GodotPipelineProperties, GodotPipelinePanel, SelectCollisions,\

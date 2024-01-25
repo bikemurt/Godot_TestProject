@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://c0xwf5oync3uv"]
+
+[ext_resource type="Shader" path="res://Levels/TurretTest/Shaders/DiamondPlate.gdshader" id="1_vpjhe"]
+[ext_resource type="Texture2D" uid="uid://cevkh3b8yodqk" path="res://Levels/TurretTest/Import/Plane_001_Bake1_PBR_Normal.png" id="2_hlw5a"]
+[ext_resource type="Texture2D" uid="uid://c8m1mqxvy0ghy" path="res://Levels/TurretTest/Import/Plane_001_Bake1_PBR_Metalness-Plane_001_Bake1_PBR_Roughness.png" id="3_q58vs"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_vpjhe")
+shader_parameter/Albedo = Color(0.345098, 0.345098, 0.345098, 1)
+shader_parameter/NormalScale = 5.0
+shader_parameter/RoughnessScale = 1.0
+shader_parameter/Normal = ExtResource("2_hlw5a")
+shader_parameter/Roughness = ExtResource("3_q58vs")

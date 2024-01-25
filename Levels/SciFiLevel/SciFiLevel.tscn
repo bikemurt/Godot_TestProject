@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://dfgbd3egn1ls5"]
+
+[ext_resource type="PackedScene" uid="uid://b1dj6sbau0e5u" path="res://Characters/AnimationTest/player.tscn" id="1_ar64b"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2n4f4"]
+
+[sub_resource type="Sky" id="Sky_0fbfl"]
+sky_material = SubResource("ProceduralSkyMaterial_2n4f4")
+
+[sub_resource type="Environment" id="Environment_exx5l"]
+background_mode = 2
+sky = SubResource("Sky_0fbfl")
+sky_custom_fov = 68.3
+ambient_light_source = 3
+volumetric_fog_density = 0.02
+volumetric_fog_anisotropy = 0.5
+volumetric_fog_ambient_inject = 1.0
+adjustment_enabled = true
+adjustment_saturation = 1.2
+
+[node name="SciFiLevel" type="Node3D"]
+
+[node name="player" parent="." instance=ExtResource("1_ar64b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.491235, 0)
+sens_horizontal = 0.2
+sens_vertical = 0.1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_exx5l")
+metadata/_edit_lock = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.849892, 0.526956, 0, -0.526956, 0.849892, 0, 0, 0)
+metadata/_edit_lock = false
