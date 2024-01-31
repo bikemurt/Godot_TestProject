@@ -68,6 +68,7 @@ class GodotPipelineProperties(PropertyGroup):
     
     # SAVE
     export_UI : BoolProperty(name = "Export", default = False)
+    use_object_suffix : BoolProperty(name = "Use Object Name Suffix", default = False)
     save_path : StringProperty(name = "", description = "Select file", default="", maxlen=1024, subtype='FILE_PATH')
 
 class GodotPipelinePanel(bpy.types.Panel):
@@ -207,6 +208,9 @@ class GodotPipelinePanel(bpy.types.Panel):
         if props.export_UI:
             row = box.row()
             row.prop(props, "save_path")
+            
+            row = box.row()
+            row.prop(props, "use_object_suffix")
             
             row = box.row()
             row.operator("object.godot_export", icon='NONE', text="Export for Godot")
@@ -448,7 +452,13 @@ class GodotExport(bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         props = scene.GodotPipelineProps
-        bpy.ops.export_scene.gltf(filepath=bpy.path.abspath(props.save_path), export_format='GLTF_SEPARATE', export_extras=True, use_visible=True, export_apply=True)
+        
+        temp_save_path = props.save_path
+        
+        if props.use_object_suffix and context.active_object:
+            temp_save_path = temp_save_path.replace(".gltf", "_" + context.active_object.name + ".gltf")
+        
+        bpy.ops.export_scene.gltf(filepath=bpy.path.abspath(temp_save_path), export_format='GLTF_SEPARATE', export_extras=True, use_visible=True, export_apply=True)
         return {'FINISHED'}
 
 classes = [GodotPipelineProperties, GodotPipelinePanel, SelectCollisions,\
