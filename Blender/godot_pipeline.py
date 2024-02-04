@@ -32,8 +32,7 @@ class GodotPipelineProperties(PropertyGroup):
             ("CYLINDER", "Cylinder", ""),
             ("TRIMESH", "Trimesh", ""),
             ("SIMPLE", "Simple", ""),
-            ("BODYONLY", "Body Only", ""),
-            ("NONE", "None", "")
+            ("BODYONLY", "Body Only", "")
         ),
         default = "BOX"
     )
@@ -119,6 +118,9 @@ class GodotPipelinePanel(bpy.types.Panel):
             
             row = box.row()
             row.prop(props, "rigid")
+            
+            row = box.row()
+            row.label(text = "(Static Body is the default)")
             
             row = box.row()
             row.prop(props, "col_only")
@@ -230,7 +232,7 @@ class SetCollisions(bpy.types.Operator):
         if props.rigid: rigid = "-r"
         
         col_only = ""
-        if props.col_only: col_only = "-c"
+        if props.col_only and props.col_types != "BODYONLY": col_only = "-c"
         
         for obj in context.selected_objects:
             if props.display_wire:
@@ -240,17 +242,7 @@ class SetCollisions(bpy.types.Operator):
             
             if props.mesh_data: obj = obj.data
             
-            if props.col_types == "NONE":
-                found = False
-                for key, value in obj.items():    
-                    if key == "collision":
-                        found = True
-                
-                if found:
-                    del obj["collision"]
-                
-            else:
-                obj["collision"] = props.col_types.lower()+rigid+col_only
+            obj["collision"] = props.col_types.lower()+rigid+col_only
 
         ## this is somewhat hacked in here, and could be optimized
         if props.col_types == "BOX" or props.col_types == "CYLINDER":
@@ -321,7 +313,7 @@ class SetCollisionSize(bpy.types.Operator):
                     obj["size_y"] = str(round(margin * dim_obj.dimensions[2] / dim_obj.scale[2], 4))
                 
                 if value == "cylinder":
-                    obj["height"] = str(round(margin * obj.dimensions[2] / obj.scale[2], 4))
+                    obj["height"] = str(round(margin * dim_obj.dimensions[2] / dim_obj.scale[2], 4))
                     
                     # radius is calculated in x, y plane
                     # take larger value
