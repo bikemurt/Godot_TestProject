@@ -22,9 +22,6 @@ from bpy.props import (
         )
 
 class GodotPipelineProperties(PropertyGroup):
-    ## GLOBAL
-    mesh_data : BoolProperty(name = "Apply to Mesh", default = False)
-    
     ## COLLISION
     collision_UI : BoolProperty(name = "Collisions", default=False)
     collision_margin : FloatProperty(name = 'Collision Margin', default = 1.03)
@@ -35,23 +32,14 @@ class GodotPipelineProperties(PropertyGroup):
             ("CYLINDER", "Cylinder", ""),
             ("TRIMESH", "Trimesh", ""),
             ("SIMPLE", "Simple", ""),
-            ("BODYONLY", "None", "")
+            ("BODYONLY", "Body Only", "")
         ),
         default = "BOX"
     )
-    body_types : EnumProperty(
-        name = "Body",
-        items = (
-            ("STATIC", "Static Body", ""),
-            ("RIGID", "Rigid Body", ""),
-            ("AREA", "Area 3D", ""),
-            ("COLONLY", "None", "")
-        ),
-        default = "STATIC"
-    )
+    rigid : BoolProperty(name = "Rigid Body", default = False)
+    mesh_data : BoolProperty(name = "Apply to Mesh", default = False)
+    col_only: BoolProperty(name = "Collision Only", default = False)
     display_wire: BoolProperty(name = "Display Wireframe", default = False)
-    discard_mesh: BoolProperty(name = "Discard Mesh", default = False)
-    object_name : StringProperty(name = "Name", default = "")
     
     ## SET PATHS
     path_UI : BoolProperty(name = "Set Scripts, Materials, etc.", default = False)
@@ -126,23 +114,33 @@ class GodotPipelinePanel(bpy.types.Panel):
             row.prop(props, "col_types")
             
             row = box.row()
-            row.prop(props, "body_types")
+            row.operator("object.select_collisions", icon='NONE', text="Select Collisions")
+            
+            row = box.row()
+            row.prop(props, "rigid")
+            
+            row = box.row()
+            row.label(text = "(Static Body is the default)")
+            
+            row = box.row()
+            row.prop(props, "col_only")
             
             row = box.row()
             row.prop(props, "display_wire")
             
             row = box.row()
-            row.prop(props, "discard_mesh")
-            
-            row = box.row()
             row.prop(props, "collision_margin")
-            
-            row = box.row()
-            row.prop(props, "object_name")
             
             row = box.row()
             row.operator("object.set_collisions", icon='NONE', text="Set Collisions")
             
+            #row = box.row()
+            #row.operator("object.reset_origin_bb", icon='NONE', text="Set Origins to Bounding Box")
+            
+            #box.separator()
+            
+            #row = box.row()
+            #row.operator("object.set_collision_size", icon='NONE', text="Set Collision Sizes")
         
         box = layout.box()
         
@@ -219,7 +217,7 @@ class GodotPipelinePanel(bpy.types.Panel):
             row = box.row()
             row.operator("object.godot_export", icon='NONE', text="Export for Godot")
         ###
-
+        
 class SetCollisions(bpy.types.Operator):
     """Set Collisions"""
     bl_idname = "object.set_collisions"
@@ -229,24 +227,12 @@ class SetCollisions(bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         props = scene.GodotPipelineProps
+
+        rigid = ""
+        if props.rigid: rigid = "-r"
         
-        
-        # compose collision string
-        
-        col_string = props.col_types.lower()
-        if props.col_types == "BODYONLY":
-            col_string = "bodyonly"
-        if props.body_types == "STATIC":
-            col_string += ""
-        if props.body_types == "RIGID":
-            col_string += "-r"
-        if props.body_types == "AREA":
-            col_string += "-a"
-        if props.body_types == "COLONLY":
-            col_string += "-c"
-        
-        if props.discard_mesh:
-            col_string += "-d"
+        col_only = ""
+        if props.col_only and props.col_types != "BODYONLY": col_only = "-c"
         
         for obj in context.selected_objects:
             if props.display_wire:
@@ -256,10 +242,7 @@ class SetCollisions(bpy.types.Operator):
             
             if props.mesh_data: obj = obj.data
             
-            if props.object_name != "":
-                obj["name_override"] = props.object_name
-            
-            obj["collision"] = col_string
+            obj["collision"] = props.col_types.lower()+rigid+col_only
 
         ## this is somewhat hacked in here, and could be optimized
         if props.col_types == "BOX" or props.col_types == "CYLINDER":
@@ -268,6 +251,48 @@ class SetCollisions(bpy.types.Operator):
 
         return {'FINISHED'}
 
+class SelectCollisions(bpy.types.Operator):
+    """Select Collisions"""
+    bl_idname = "object.select_collisions"
+    bl_label = "Set Objects with No Collisions"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        props = scene.GodotPipelineProps
+        
+        rigid = ""
+        if props.rigid: rigid = "-r"
+        
+        col_only = ""
+        if props.col_only: col_only = "-c"
+        
+        for obj in scene.objects:
+            
+            if obj.visible_get() == False:
+                continue
+            
+            found = False
+            if props.col_types == "NONE":
+                
+                # only show objects with no collision
+                for key, value in obj.items():    
+                    if key == "collision":
+                        found = True
+                
+                if not found:
+                    obj.select_set(True)
+            else:
+                for key, value in obj.items():    
+                    if key == "collision" and value == props.col_types.lower()+rigid+col_only:
+                        found = True
+                    
+                if found:
+                    obj.select_set(True)
+                
+        return {'FINISHED'}
+
+
 class SetCollisionSize(bpy.types.Operator):
     """Set Collision Size Script"""
     bl_idname = "object.set_collision_size"
@@ -275,11 +300,10 @@ class SetCollisionSize(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def set_size(self, obj, dim_obj, margin):
-        _items = obj.items()
-        for key, value in _items:
+        
+        for key, value in obj.items():
             if key == "collision":
-                # clear all flags to check collision shape
-                value = value.replace("-r", "").replace("-c", "").replace("-a", "").replace("-d", "")
+                value = value.replace("-r", "").replace("-c", "")
                 if value == "box":
                     # divide out by scale, because the collision object in godot is parented to the actual mesh,
                     # so it will get the parent's scale (basically we are preventing the scale from being applied twice)
@@ -428,7 +452,7 @@ class GodotExport(bpy.types.Operator):
         bpy.ops.export_scene.gltf(filepath=bpy.path.abspath(temp_save_path), export_format='GLTF_SEPARATE', export_extras=True, use_visible=True, export_apply=True)
         return {'FINISHED'}
 
-classes = [GodotPipelineProperties, GodotPipelinePanel,\
+classes = [GodotPipelineProperties, GodotPipelinePanel, SelectCollisions,\
     SetCollisions, SetCollisionSize, ResetOriginBB, SetPath, SetMultimesh, ClearAllCustoms, SetScriptProperties, GodotExport]
 
 def register():
