@@ -27,7 +27,7 @@ class GodotPipelineProperties(PropertyGroup):
     
     ## COLLISION
     collision_UI : BoolProperty(name = "Collisions", default=False)
-    collision_margin : FloatProperty(name = 'Collision Margin', default = 1.03)
+    collision_margin : FloatProperty(name = 'Collision Margin', default = 1.00)
     col_types : EnumProperty(
         name =  "Collision",
         items = (
@@ -61,9 +61,8 @@ class GodotPipelineProperties(PropertyGroup):
         items = (
             ("script", "Script", ""),
             ("material_0", "Material 0", ""),
-            ("material_1", "Material 1", ""),
-            ("material_2", "Material 2", ""),
-            ("shader", "Shader", "")
+            ("shader", "Shader", ""),
+            ("nav_mesh", "Nav Mesh", "")
         ),
         default = "script"
     )
