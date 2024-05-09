@@ -1,7 +1,12 @@
 bl_info = {
     "name": "Godot Pipeline",
+    "description": "A 3D pipeline for exporting from Blender and importing into Godot 4+.",
+    "author": "Michael Jared",
+    "version": (2,0),
+    "location": "View3D > Properties > Godot Pipeline",
+    "doc_url": "https://www.michaeljared.ca",
     "blender": (2, 80, 0),
-    "category": "Object",
+    "category": "Object"
 }
 
 import bpy, math
@@ -21,9 +26,16 @@ from bpy.props import (
             CollectionProperty
         )
 
+# this is a full list of pipeline customs - helps with displaying and clearing data
+custom_list = ["collision", "size_x", "size_y", "size_z", "height", "radius", "script",\
+    "material_0", "material_1", "material_2", "material_3", "shader", "nav_mesh", "multimesh",\
+    "prop_file", "name_override", "physics_mat"]
+
 class GodotPipelineProperties(PropertyGroup):
     ## GLOBAL
-    mesh_data : BoolProperty(name = "Apply to Mesh", default = False)
+    global_UI : BoolProperty(name = "Global Settings", default = False)
+    mesh_data : BoolProperty(name = "Assign to Mesh instead of Object", default = False)
+    object_name : StringProperty(name = "Name Override", default = "")
     
     ## COLLISION
     collision_UI : BoolProperty(name = "Collisions", default=False)
@@ -33,6 +45,7 @@ class GodotPipelineProperties(PropertyGroup):
         items = (
             ("BOX", "Box", ""),
             ("CYLINDER", "Cylinder", ""),
+            ("SPHERE", "Sphere", ""),
             ("TRIMESH", "Trimesh", ""),
             ("SIMPLE", "Simple", ""),
             ("BODYONLY", "None", "")
@@ -51,21 +64,28 @@ class GodotPipelineProperties(PropertyGroup):
     )
     display_wire: BoolProperty(name = "Display Wireframe", default = False)
     discard_mesh: BoolProperty(name = "Discard Mesh", default = False)
-    object_name : StringProperty(name = "Name", default = "")
     
     ## SET PATHS
-    path_UI : BoolProperty(name = "Set Scripts, Materials, etc.", default = False)
+    path_UI : BoolProperty(name = "Path Setter", default = False)
     set_path : StringProperty(name = "Set Path", default = "")
     path_options : EnumProperty(
         name =  "Path Type",
         items = (
             ("script", "Script", ""),
             ("material_0", "Material 0", ""),
+            ("material_1", "Material 1", ""),
+            ("material_2", "Material 2", ""),
+            ("material_3", "Material 3", ""),
             ("shader", "Shader", ""),
-            ("nav_mesh", "Nav Mesh", "")
+            ("nav_mesh", "Nav Mesh", ""),
+            ("multimesh", "Multimesh", ""),
+            ("physics_mat", "Physics Material", "")
         ),
         default = "script"
     )
+    
+    # SCRIPT PARAM UI
+    script_param_UI : BoolProperty(name = "Script Parameters", default = False)
     prop_path : StringProperty(name = "Param File", default = "")
     
     ## Multimesh
@@ -78,7 +98,7 @@ class GodotPipelineProperties(PropertyGroup):
     
     # SAVE
     export_UI : BoolProperty(name = "Export", default = False)
-    use_object_suffix : BoolProperty(name = "Use Object Name Suffix", default = False)
+    use_object_suffix : BoolProperty(name = "Append '_ObjectName.gltf' to Filename", default = False)
     save_path : StringProperty(name = "", description = "Select file", default="", maxlen=1024, subtype='FILE_PATH')
 
 class GodotPipelinePanel(bpy.types.Panel):
@@ -95,20 +115,34 @@ class GodotPipelinePanel(bpy.types.Panel):
         props = scene.GodotPipelineProps
         obj = context.object
         
-        ###
+        # GLOBAL SETTINGS
         box = layout.box()
         
         row = box.row()
-        row.label(text="Global Settings:")
         
-        row = box.row()
-        row.prop(props, "mesh_data")
+        row.prop(props, "global_UI",
+            icon="TRIA_DOWN" if props.global_UI else "TRIA_RIGHT",
+            icon_only=False, emboss=False
+        )
         
-        row = box.row()
-        row.operator("object.clear_all_customs", icon='NONE', text="Clear Custom Data")
+        if props.global_UI:
+            row = box.row()
+            row.prop(props, "mesh_data")
+        
+            row = box.split(factor=0.4)
+            row.label(text='Name Override:')
+            row.prop(props, "object_name", text='')
             
-        ###
-        
+            row = box.row()
+            row.operator("object.name_override", icon='NONE', text="Apply Name Override")
+            
+            row = box.row()
+            row.operator("object.show_all_customs", icon='NONE', text="Display Addon Data")
+            
+            row = box.row()
+            row.operator("object.clear_all_customs", icon='NONE', text="Clear Addon Data")
+            
+        # COLLISIONS
         box = layout.box()
         
         row = box.row()
@@ -137,12 +171,10 @@ class GodotPipelinePanel(bpy.types.Panel):
             row.prop(props, "collision_margin")
             
             row = box.row()
-            row.prop(props, "object_name")
-            
-            row = box.row()
             row.operator("object.set_collisions", icon='NONE', text="Set Collisions")
             
         
+        # PATH SETTER
         box = layout.box()
         
         row = box.row()
@@ -161,45 +193,60 @@ class GodotPipelinePanel(bpy.types.Panel):
             row = box.row()
             row.operator("object.set_path", icon='NONE', text="Set Path")
             
+        
+        # SCRIPT PARAMS
+        box = layout.box()
+        
+        row = box.row()
+        row.prop(props, "script_param_UI",
+            icon="TRIA_DOWN" if props.script_param_UI else "TRIA_RIGHT",
+            icon_only=False, emboss=False
+        )
+        
+        if props.script_param_UI:
             row = box.row()
             row.prop(props, "prop_path")
             
             row = box.row()
             row.operator("object.set_script_properties", icon='NONE', text="Set Script Parameters")
         
-        box = layout.box()
         
-        row = box.row()
-        row.prop(props, "multimesh_UI",
-            icon="TRIA_DOWN" if props.multimesh_UI else "TRIA_RIGHT",
-            icon_only=False, emboss=False
-        )
-        
-        if props.multimesh_UI:
-            row = box.row()
-            row.prop_search(context.scene, "target", context.scene, "objects", text="Mesh")
-
-            row = box.row()
-            row.prop(props, "occlusion_culling")
+        # LEGACY MULTIMESH
+        if False:
+            box = layout.box()
             
             row = box.row()
-            row.prop(props, "multimesh_UI_dynamic_inst")
+            row.prop(props, "multimesh_UI",
+                icon="TRIA_DOWN" if props.multimesh_UI else "TRIA_RIGHT",
+                icon_only=False, emboss=False
+            )
             
-            if props.multimesh_UI_dynamic_inst:
-                row = box.split(factor=0.4)
-                row.label(text='Camera Node:')
-                row.prop(props, "camera_node_path", text='')
-            
-            if props.multimesh_UI_dynamic_inst:
+            if props.multimesh_UI:
                 row = box.row()
-                row.prop(props, "dynamic_script")
-            
-            row = box.row()
-            row.prop(props, "vertex_painter")
-            
-            row = box.row()
-            row.operator("object.set_multimesh", icon='NONE', text="Set Multimesh")
+                row.prop_search(context.scene, "target", context.scene, "objects", text="Mesh")
+
+                row = box.row()
+                row.prop(props, "occlusion_culling")
+                
+                row = box.row()
+                row.prop(props, "multimesh_UI_dynamic_inst")
+                
+                if props.multimesh_UI_dynamic_inst:
+                    row = box.split(factor=0.4)
+                    row.label(text='Camera Node:')
+                    row.prop(props, "camera_node_path", text='')
+                
+                if props.multimesh_UI_dynamic_inst:
+                    row = box.row()
+                    row.prop(props, "dynamic_script")
+                
+                row = box.row()
+                row.prop(props, "vertex_painter")
+                
+                row = box.row()
+                row.operator("object.set_multimesh", icon='NONE', text="Set Multimesh")
         
+        # EXPORT
         box = layout.box()
         
         row = box.row()
@@ -219,11 +266,17 @@ class GodotPipelinePanel(bpy.types.Panel):
             row.operator("object.godot_export", icon='NONE', text="Export for Godot")
         ###
 
+
+### CORE ADDON CLASSES
+
 class SetCollisions(bpy.types.Operator):
     """Set Collisions"""
     bl_idname = "object.set_collisions"
     bl_label = "Set Collision Type"
     bl_options = {'REGISTER', 'UNDO'}
+    
+    clear_fields = ["radius", "height", "size_x", "size_y", "size_z"]
+    shape_fields = ["BOX", "CYLINDER", "SPHERE"]
 
     def execute(self, context):
         scene = context.scene
@@ -253,6 +306,7 @@ class SetCollisions(bpy.types.Operator):
             else:
                 obj.display_type = "TEXTURED"
             
+            # apply data to mesh, not object
             if props.mesh_data: obj = obj.data
             
             if props.object_name != "":
@@ -260,8 +314,13 @@ class SetCollisions(bpy.types.Operator):
             
             obj["collision"] = col_string
 
-        ## this is somewhat hacked in here, and could be optimized
-        if props.col_types == "BOX" or props.col_types == "CYLINDER":
+            # clear existing fields
+            for field in self.clear_fields:
+                if field in obj:
+                    del obj[field]
+            
+        # reset origin to bounding box and set collision sizes
+        if props.col_types in self.shape_fields:
             bpy.ops.object.reset_origin_bb()
             bpy.ops.object.set_collision_size()
 
@@ -277,6 +336,7 @@ class SetCollisionSize(bpy.types.Operator):
         _items = obj.items()
         for key, value in _items:
             if key == "collision":
+                
                 # clear all flags to check collision shape
                 value = value.replace("-r", "").replace("-c", "").replace("-a", "").replace("-d", "")
                 if value == "box":
@@ -296,6 +356,19 @@ class SetCollisionSize(bpy.types.Operator):
                         r = 0.5 * dim_obj.dimensions[1] / dim_obj.scale[1]
                     
                     obj["radius"] = str(round(margin * r, 4))
+                
+                if value == "sphere":
+                    # radius is taken to be largest of x,y,z side lengths
+                    r = 0.5 * dim_obj.dimensions[0] / dim_obj.scale[0]
+                    
+                    if dim_obj.dimensions[1] > dim_obj.dimensions[0]:
+                        r = 0.5 * dim_obj.dimensions[1] / dim_obj.scale[1]
+                        
+                    if dim_obj.dimensions[2] > dim_obj.dimensions[0]:
+                        r = 0.5 * dim_obj.dimensions[2] / dim_obj.scale[2]
+                    
+                    obj["radius"] = str(round(margin * r, 4))
+                    
                     
 
     def execute(self, context):
@@ -338,6 +411,9 @@ class SetPath(bpy.types.Operator):
         
         for obj in context.selected_objects:
             if props.mesh_data: obj = obj.data
+            if props.object_name != "":
+                obj["name_override"] = props.object_name
+            
             obj[props.path_options] = props.set_path
         
         return {'FINISHED'}
@@ -354,10 +430,15 @@ class SetScriptProperties(bpy.types.Operator):
         
         for obj in context.selected_objects:
             if props.mesh_data: obj = obj.data
+            if props.object_name != "":
+                obj["name_override"] = props.object_name
+            
             obj["prop_file"] = props.prop_path
         
         return {'FINISHED'}
 
+
+# LEGACY???
 class SetMultimesh(bpy.types.Operator):
     """Set Multimesh"""
     bl_idname = "object.set_multimesh"
@@ -405,10 +486,44 @@ class ClearAllCustoms(bpy.types.Operator):
         
         for obj in context.selected_objects:
             if props.mesh_data: obj = obj.data
-            obj.id_properties_clear()
+            
+            clear_list = []
+            for key, value in obj.items():
+                if key in custom_list:
+                    clear_list.append(key)
+            
+            for key in clear_list:
+                del obj[key]
+                    
+            #obj.id_properties_clear()
         
         return {'FINISHED'}
 
+
+class NameOverride(bpy.types.Operator):
+    """Name Override"""
+    bl_idname = "object.name_override"
+    bl_label = "Name Override"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        props = scene.GodotPipelineProps
+        
+        for obj in context.selected_objects:
+            if props.mesh_data: obj = obj.data
+            if props.object_name != "":
+                obj["name_override"] = props.object_name
+            else:
+                if "name_override" in obj:
+                    del obj["name_override"]
+            
+            props.object_name = ""
+        
+        return {'FINISHED'}
+
+
+# EXPORT
 class GodotExport(bpy.types.Operator):
     """Godot Export"""
     bl_idname = "object.godot_export"
@@ -426,9 +541,56 @@ class GodotExport(bpy.types.Operator):
         
         bpy.ops.export_scene.gltf(filepath=bpy.path.abspath(temp_save_path), export_format='GLTF_SEPARATE', export_extras=True, use_visible=True, export_apply=True)
         return {'FINISHED'}
+    
+### INFO
+
+class ShowAllCustoms(bpy.types.Operator):
+    """Show All Customs"""
+    bl_idname = "object.show_all_customs"
+    bl_label = "Show All Customs"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        props = scene.GodotPipelineProps
+        
+        obj = context.active_object
+        
+        obj_str = "Assigned to OBJECT"
+        if props.mesh_data: obj_str = "Assigned to MESH"
+        
+        ShowCustoms(obj, obj.name + " Customs ("+obj_str+")")
+        
+        return {'FINISHED'}
+
+def ShowCustoms(obj, title = "Message Box", icon = 'INFO'):
+
+    def draw(self, context):
+        scene = context.scene
+        props = scene.GodotPipelineProps
+        
+        objx = obj
+        if props.mesh_data: objx = obj.data
+        
+        for key, value in objx.items():
+            if key in custom_list:
+                self.layout.label(text=str(key)+"="+str(value))
+
+    bpy.context.window_manager.popup_menu(draw, title = title, icon = icon)
+
+def ShowMessageBox(message = "", title = "Message Box", icon = 'INFO'):
+
+    def draw(self, context):
+        self.layout.label(text=message)
+
+    bpy.context.window_manager.popup_menu(draw, title = title, icon = icon)
+
+###
 
 classes = [GodotPipelineProperties, GodotPipelinePanel,\
-    SetCollisions, SetCollisionSize, ResetOriginBB, SetPath, SetMultimesh, ClearAllCustoms, SetScriptProperties, GodotExport]
+    SetCollisions, SetCollisionSize, ResetOriginBB, SetPath, SetMultimesh, ClearAllCustoms, SetScriptProperties,\
+    ShowAllCustoms, NameOverride, \
+    GodotExport]
 
 def register():
     for cls in classes:
